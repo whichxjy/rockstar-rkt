@@ -57,3 +57,10 @@
  (lex "1.23")
  (list (srcloc-token (token 'NUMBER 1.23)
                      (srcloc 'string 1 0 1 4))))
+
+;; String
+
+(check-equal?
+ (lex "\"Hello San Francisco\"")
+ (list (srcloc-token (token 'STRING "Hello San Francisco")
+                     (srcloc 'string 1 0 1 21))))
