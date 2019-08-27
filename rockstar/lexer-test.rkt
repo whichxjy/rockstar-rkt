@@ -34,7 +34,7 @@
  (list (srcloc-token (token 'WHITESPACE "\t")
                      (srcloc 'string 1 0 1 1))))
 
-;; String
+;; Comment
 
 (check-equal?
  (lex "(What about Logic?)")
@@ -45,6 +45,18 @@
  (lex "(Are we taking about \"Mixtape Logic\" or \"Album Logic\"?)")
  (list (srcloc-token (token 'COMMENT #:skip? #t)
                      (srcloc 'string 1 0 1 55))))
+
+;; Reserved terms
+
+(check-equal?
+ (lex "mysterious")
+ (list (srcloc-token (token "mysterious" "mysterious")
+                     (srcloc 'string 1 0 1 10))))
+
+(check-equal?
+ (lex "let")
+ (list (srcloc-token (token "let" "let")
+                     (srcloc 'string 1 0 1 3))))
 
 ;; Number
 
