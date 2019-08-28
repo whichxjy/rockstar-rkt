@@ -56,16 +56,21 @@
   (lexer-srcloc
    ;; Newline
    ["\n" (token 'NEWLINE lexeme)]
-   ;; Whitespace
-   [whitespace (token 'WHITESPACE lexeme)]
    ;; Comment
    [(from/to "(" ")") (token 'COMMENT #:skip? #t)]
+   ;; Whitespace
+   [whitespace (token 'WHITESPACE lexeme)]
    ;; Quote s
-   [(:seq "'s" (:+ " ")) (token 'QUOTE-S lexeme)]
-   ;; Ignored single quote
-   ["'" (token 'IGNORED-QUOTE #:skip? #t)]
-   ;; Reserved terms
-   [reserved-terms (token lexeme lexeme)]
+   [(:seq (:+ "'") "s" (:+ whitespace)) (token 'QUOTE-S lexeme)]
+   ;; Item (Ignored single quote)
+   [(:- (from/stop-before (:+ (:or alphabetic "'")) (:or whitespace "\n"))
+        (:or (:seq any-string (:seq (:+ "'") "s" (:+ whitespace)) any-string)
+             (:seq any-string (:seq (:+ "'") "s"))
+             (:seq any-string (:+ "'"))))
+    (token (string-replace lexeme "'" "")
+           (string-replace lexeme "'" ""))]
+   ;; Ignored other single quotes
+   ["'" (token 'ignored-quote #:skip? #t)]
    ;; Number
    [(:or (:+ numeric)
          (:seq (:+ numeric) "." (:+ numeric)))
