@@ -19,21 +19,21 @@
 
 ;; Pronoun reserved term
 (define (pronoun-reserved-term? str)
-  (or (string=? str "it")
-      (string=? str "he")
-      (string=? str "she")
-      (string=? str "him")
-      (string=? str "her")
-      (string=? str "they")
-      (string=? str "them")
-      (string=? str "ze")
-      (string=? str "hir")
-      (string=? str "zie")
-      (string=? str "zir")
-      (string=? str "xe")
-      (string=? str "xem")
-      (string=? str "ve")
-      (string=? str "ver")))
+  (or (string=? str "It") (string=? str "it")
+      (string=? str "He") (string=? str "he")
+      (string=? str "She") (string=? str "she")
+      (string=? str "Him") (string=? str "him")
+      (string=? str "Her") (string=? str "her")
+      (string=? str "They") (string=? str "they")
+      (string=? str "Them") (string=? str "them")
+      (string=? str "Ze") (string=? str "ze")
+      (string=? str "Hir") (string=? str "hir")
+      (string=? str "Zie") (string=? str "zie")
+      (string=? str "Zir") (string=? str "zir")
+      (string=? str "Xe") (string=? str "xe")
+      (string=? str "Xem") (string=? str "xem")
+      (string=? str "Ve") (string=? str "ve")
+      (string=? str "Ver") (string=? str "ver")))
 
 ;; Mysterious reserved term
 (define (mysterious-reserved-term? str)
@@ -101,6 +101,24 @@
       (assignment-reserved-term? str)
       (operator-reserved-term? str)))
 
+;; Return #t if str starts with an uppercase letter, #f otherwise.
+(define (first-letter-upper-case? str)
+  (and (string? str)
+       (positive? (string-length str))
+       (char-upper-case? (string-ref str 0))))
+
+;; Return #t if str contains only lowercase letters (a-z), #f otherwise.
+(define (only-lower-case? str)
+  (and (string? str)
+       (positive? (string-length str))
+       (andmap char-upper-case? (string->list str))))
+
+;; Return #t if str contains only letters (a-z & A-Z), #f otherwise.
+(define (only-letters? str)
+  (and (string? str)
+       (positive? (string-length str))
+       (andmap char-alphabetic? (string->list str))))
+
 ;; Create lexer
 (define rockstar-lexer
   (lexer-srcloc
@@ -117,8 +135,18 @@
         (:or (:seq any-string (:seq (:+ "'") "s" (:+ whitespace)) any-string)
              (:seq any-string (:seq (:+ "'") "s"))
              (:seq any-string (:+ "'"))))
-    (token (string-replace lexeme "'" "")
-           (string-replace lexeme "'" ""))]
+    (let ([item (string-replace lexeme "'" "")])
+      (cond
+        [(reserved-term? item)
+         (token item item)]
+        [(first-letter-upper-case? item)
+         (token 'PROPER-NAME item)]
+        [(only-lower-case? item)
+         (token 'COMMON-NAME item)]
+        [(only-letters? item)
+         (token 'SIMPLE-NAME item)]
+        [else
+         (error "Something is Wrong")]))]
    ;; Ignored other single quotes
    ["'" (token 'ignored-quote #:skip? #t)]
    ;; Number
