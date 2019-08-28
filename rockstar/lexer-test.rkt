@@ -46,6 +46,26 @@
  (list (srcloc-token (token 'COMMENT #:skip? #t)
                      (srcloc 'string 1 0 1 55))))
 
+;; Quote
+
+(check-equal?
+ (lex "'s   ")
+ (list (srcloc-token (token 'QUOTE-S "'s   ")
+                     (srcloc 'string 1 0 1 5))))
+
+(check-equal?
+ (lex "'''''")
+ (list (srcloc-token (token 'IGNORED-QUOTE #:skip? #t)
+                     (srcloc 'string 1 0 1 1))
+       (srcloc-token (token 'IGNORED-QUOTE #:skip? #t)
+                     (srcloc 'string 1 1 2 1))
+       (srcloc-token (token 'IGNORED-QUOTE #:skip? #t)
+                     (srcloc 'string 1 2 3 1))
+       (srcloc-token (token 'IGNORED-QUOTE #:skip? #t)
+                     (srcloc 'string 1 3 4 1))
+       (srcloc-token (token 'IGNORED-QUOTE #:skip? #t)
+                     (srcloc 'string 1 4 5 1))))
+
 ;; Reserved terms
 
 (check-equal?

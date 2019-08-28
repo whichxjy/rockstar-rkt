@@ -54,13 +54,23 @@
 ;; Create lexer
 (define rockstar-lexer
   (lexer-srcloc
+   ;; Newline
    ["\n" (token 'NEWLINE lexeme)]
+   ;; Whitespace
    [whitespace (token 'WHITESPACE lexeme)]
+   ;; Comment
    [(from/to "(" ")") (token 'COMMENT #:skip? #t)]
+   ;; Quote s
+   [(:seq "'s" (:+ " ")) (token 'QUOTE-S lexeme)]
+   ;; Ignored single quote
+   ["'" (token 'IGNORED-QUOTE #:skip? #t)]
+   ;; Reserved terms
    [reserved-terms (token lexeme lexeme)]
+   ;; Number
    [(:or (:+ numeric)
          (:seq (:+ numeric) "." (:+ numeric)))
     (token 'NUMBER (string->number lexeme))]
+   ;; String
    [(from/to "\"" "\"")
     (token 'STRING
            (substring lexeme
