@@ -2,54 +2,104 @@
 
 (require brag/support)
 
-;; Variable reserved terms
-(define-lex-abbrev variable-reserved-terms
-  (:or "a" "an" "the" "my" "or" "your"
-       "A" "An" "The" "My" "Or" "Your"))
+;; Variable reserved term
+(define (variable-reserved-term? str)
+  (or (eqv? str "a")
+      (eqv? str "an")
+      (eqv? str "the")
+      (eqv? str "my")
+      (eqv? str "or")
+      (eqv? str "your")
+      (eqv? str "A")
+      (eqv? str "An")
+      (eqv? str "The")
+      (eqv? str "My")
+      (eqv? str "Or")
+      (eqv? str "Your")))
 
-;; Pronoun reserved terms
-(define-lex-abbrev pronoun-reserved-terms
-  (:or "it" "he" "she" "him" "her" "they" "them" "ze"
-       "hir" "zie" "zir" "xe" "xem" "ve" "ver"))
+;; Pronoun reserved term
+(define (pronoun-reserved-term? str)
+  (or (eqv? str "it")
+      (eqv? str "he")
+      (eqv? str "she")
+      (eqv? str "him")
+      (eqv? str "her")
+      (eqv? str "they")
+      (eqv? str "them")
+      (eqv? str "ze")
+      (eqv? str "hir")
+      (eqv? str "zie")
+      (eqv? str "zir")
+      (eqv? str "xe")
+      (eqv? str "xem")
+      (eqv? str "ve")
+      (eqv? str "ver")))
 
-;; Mysterious reserved terms
-(define-lex-abbrev mysterious-reserved-terms
-  (:or "Mysterious" "mysterious"))
+;; Mysterious reserved term
+(define (mysterious-reserved-term? str)
+  (or (eqv? str "Mysterious")
+      (eqv? str "mysterious")))
 
-;; Null reserved terms
-(define-lex-abbrev null-reserved-terms
-  (:or "Null" "null" "nothing" "nowhere" "nobody" "empty" "gone"))
+;; Null reserved term
+(define (null-reserved-term? str)
+  (or (eqv? str "Null")
+      (eqv? str "null")
+      (eqv? str "nothing")
+      (eqv? str "nowhere")
+      (eqv? str "nobody")
+      (eqv? str "empty")
+      (eqv? str "gone")))
 
-;; Boolean reserved terms
-(define-lex-abbrev boolean-reserved-terms
-  (:or "Boolean" "true" "false" "maybe" "definitely maybe"
-       "right" "yes" "ok" "wrong" "no" "lies"))
+;; Boolean reserved term
+(define (boolean-reserved-term? str)
+  (or (eqv? str "Boolean")
+      (eqv? str "true")
+      (eqv? str "false")
+      (eqv? str "maybe")
+      (eqv? str "definitely maybe")
+      (eqv? str "right")
+      (eqv? str "yes")
+      (eqv? str "ok")
+      (eqv? str "wrong")
+      (eqv? str "no")
+      (eqv? str "lies")))
 
-;; Type reserved terms
-(define-lex-abbrev type-reserved-terms
-  (:or mysterious-reserved-terms
-       null-reserved-terms
-       boolean-reserved-terms))
+;; Type reserved term
+(define (type-reserved-term? str)
+  (or (mysterious-reserved-term? str)
+      (null-reserved-term? str)
+      (boolean-reserved-term? str)))
 
-;; Assignment reserved terms
-(define-lex-abbrev assignment-reserved-terms
-  (:or "Put" "put" "into"
-       "Let" "let" "be"))
+;; Assignment reserved term
+(define (assignment-reserved-term? str)
+  (or (eqv? str "Put")
+      (eqv? str "put")
+      (eqv? str "into")
+      (eqv? str "Let")
+      (eqv? str "let")
+      (eqv? str "be")))
 
-;; Operator reserved terms
-(define-lex-abbrev operator-reserved-terms
-  (:or "+" "plus" "with"
-       "-" "minus" "without"
-       "*" "times" "of"
-       "/" "over"))
+;; Operator reserved term
+(define (operator-reserved-term? str)
+  (or (eqv? str "+")
+      (eqv? str "plus")
+      (eqv? str "with")
+      (eqv? str "-")
+      (eqv? str "minus")
+      (eqv? str "without")
+      (eqv? str "*")
+      (eqv? str "times")
+      (eqv? str "of")
+      (eqv? str "/")
+      (eqv? str "over")))
 
-;; Reserved terms
-(define-lex-abbrev reserved-terms
-  (:or variable-reserved-terms
-       pronoun-reserved-terms
-       type-reserved-terms
-       assignment-reserved-terms
-       operator-reserved-terms))
+;; Reserved term
+(define (reserved-term? str)
+  (or (variable-reserved-term? str)
+      (pronoun-reserved-term? str)
+      (type-reserved-term? str)
+      (assignment-reserved-term? str)
+      (operator-reserved-term? str)))
 
 ;; Create lexer
 (define rockstar-lexer
