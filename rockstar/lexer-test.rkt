@@ -46,7 +46,7 @@
  (list (srcloc-token (token 'COMMENT #:skip? #t)
                      (srcloc 'string 1 0 1 55))))
 
-;; Quote
+;; Single Quote
 
 (check-equal?
  (lex "'''''")
