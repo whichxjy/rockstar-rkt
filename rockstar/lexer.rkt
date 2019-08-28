@@ -2,9 +2,6 @@
 
 (require brag/support)
 
-;; Digits
-(define-lex-abbrev digits (:+ (char-set "0123456789")))
-
 ;; Variable reserved terms
 (define-lex-abbrev variable-reserved-terms
   (:or "a" "an" "the" "my" "or" "your"
@@ -61,7 +58,8 @@
    [whitespace (token 'WHITESPACE lexeme)]
    [(from/to "(" ")") (token 'COMMENT #:skip? #t)]
    [reserved-terms (token lexeme lexeme)]
-   [(:or digits (:seq digits "." digits))
+   [(:or (:+ numeric)
+         (:seq (:+ numeric) "." (:+ numeric)))
     (token 'NUMBER (string->number lexeme))]
    [(from/to "\"" "\"")
     (token 'STRING
