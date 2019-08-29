@@ -3,10 +3,10 @@
 (require "parser.rkt" "tokenizer.rkt" brag/support)
 
 (define str #<<HERE
-(haha)
-Put wrong into my phone
-Let abc be 123
-Let Hello World be 123
+Hello takes X and Y
+Give back 123
+
+Let Abc be 123
 HERE
 )
 

@@ -87,13 +87,25 @@
       (string=? str "/")
       (string=? str "over")))
 
+;; Function Reserved term
+(define (function-reserved-term? str)
+  (or (string=? str "takes")
+      (string=? str "taking")
+      (string=? str "Give")
+      (string=? str "back")
+      (string=? str "and")
+      (string=? str ",")
+      (string=? str "&")
+      (string=? str "n")))
+
 ;; Reserved term
 (define (reserved-term? str)
   (or (variable-reserved-term? str)
       (pronoun-reserved-term? str)
       (type-reserved-term? str)
       (assignment-reserved-term? str)
-      (operator-reserved-term? str)))
+      (operator-reserved-term? str)
+      (function-reserved-term? str)))
 
 ;; Return #t if str starts with an uppercase letter, #f otherwise.
 (define (first-letter-upper-case? str)

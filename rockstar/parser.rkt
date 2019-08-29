@@ -1,9 +1,10 @@
 #lang brag
 
 ;; Rockstar program
-r-program : [r-line] (NEWLINE [r-line])*
+r-program : [(r-line | r-func-def)] (NEWLINE [(r-line | r-func-def)])*
+
 ;; Line
-r-line : r-statement
+r-line : r-statement | r-func-return
 
 ;; Statement
 r-statement : r-assignment
@@ -15,7 +16,8 @@ r-put : ("Put" | "put") r-expr "into" r-var
 r-let : ("Let" | "let") r-var "be" r-expr
 
 ;; Expression
-r-expr : r-constant | r-literal | r-expr
+r-expr : r-constant | r-literal
+
 ;; Constant
 r-constant : r-mysterious | r-null | r-boolean
 ;; Literal
@@ -69,3 +71,20 @@ r-pronoun : "It" | "it"
           | "Xem" | "xem"
           | "Ve" | "ve"
           | "Ver" | "ver"
+
+;; Function Definition
+r-func-def : r-func-name "takes" r-parameter (("and" | "," | "&" | ("," "and") | "n") r-parameter)*
+             NEWLINE
+             (r-line NEWLINE)*
+             r-func-return
+             NEWLINE
+;; Function Return Statement
+r-func-return : "Give" "back" r-expr
+;; Function Call
+r-func-call : r-func-name "taking" r-argument (("," | "&" | ("," "and") | "n") r-argument)*
+;; Function Name
+r-func-name : r-var
+;; Function Parameter
+r-parameter : r-var
+;; Function Argument
+r-argument : r-var | r-literal
