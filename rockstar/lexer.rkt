@@ -127,7 +127,7 @@
    ;; Comment
    [(from/to "(" ")") (token 'COMMENT #:skip? #t)]
    ;; Whitespace
-   [whitespace (token 'WHITESPACE lexeme)]
+   [whitespace (token 'WHITESPACE lexeme #:skip? #t)]
    ;; Quote s
    [(:seq (:+ "'") "s" (:+ whitespace)) (token 'QUOTE-S lexeme)]
    ;; Item (Ignored single quote)

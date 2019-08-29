@@ -26,12 +26,12 @@
 
 (check-equal?
  (lex " ")
- (list (srcloc-token (token 'WHITESPACE " ")
+ (list (srcloc-token (token 'WHITESPACE " " #:skip? #t)
                      (srcloc 'string 1 0 1 1))))
 
 (check-equal?
  (lex "\t")
- (list (srcloc-token (token 'WHITESPACE "\t")
+ (list (srcloc-token (token 'WHITESPACE "\t" #:skip? #t)
                      (srcloc 'string 1 0 1 1))))
 
 ;; Comment
@@ -73,16 +73,16 @@
 
 (check-equal?
  (lex "s's   ")
- (list (srcloc-token (token 'SIMPLE-NAME "s")
+ (list (srcloc-token (token 'LOWER-NAME "s")
                      (srcloc 'string 1 0 1 1))
        (srcloc-token (token 'QUOTE-S "'s   ")
                      (srcloc 'string 1 1 2 5))))
 
 (check-equal?
  (lex "ss'ss ")
- (list (srcloc-token (token 'SIMPLE-NAME "ssss")
+ (list (srcloc-token (token 'LOWER-NAME "ssss")
                      (srcloc 'string 1 0 1 5))
-       (srcloc-token (token 'WHITESPACE " ")
+       (srcloc-token (token 'WHITESPACE " " #:skip? #t)
                      (srcloc 'string 1 5 6 1))))
 
 (check-equal?
@@ -91,19 +91,19 @@
                      (srcloc 'string 1 0 1 2))
        (srcloc-token (token 'QUOTE-S "'s ")
                      (srcloc 'string 1 2 3 3))
-       (srcloc-token (token 'SIMPLE-NAME "red")
+       (srcloc-token (token 'LOWER-NAME "red")
                      (srcloc 'string 1 5 6 3))))
 
 (check-equal?
  (lex "abc''''d\n")
- (list (srcloc-token (token 'SIMPLE-NAME "abcd")
+ (list (srcloc-token (token 'LOWER-NAME "abcd")
                      (srcloc 'string 1 0 1 8))
        (srcloc-token (token 'NEWLINE "\n")
                      (srcloc 'string 1 8 9 1))))
 
 (check-equal?
  (lex "abcd''''\n")
- (list (srcloc-token (token 'SIMPLE-NAME "abcd")
+ (list (srcloc-token (token 'LOWER-NAME "abcd")
                      (srcloc 'string 1 0 1 4))
        (srcloc-token (token 'ignored-quote #:skip? #t)
                      (srcloc 'string 1 4 5 1))
@@ -118,9 +118,9 @@
 
 (check-equal?
  (lex "ain't ")
- (list (srcloc-token (token 'SIMPLE-NAME "aint")
+ (list (srcloc-token (token 'LOWER-NAME "aint")
                      (srcloc 'string 1 0 1 5))
-       (srcloc-token (token 'WHITESPACE " ")
+       (srcloc-token (token 'WHITESPACE " " #:skip? #t)
                      (srcloc 'string 1 5 6 1))))
 
 ;; Reserved terms
@@ -146,20 +146,20 @@
  (lex "my phone")
  (list (srcloc-token (token "my" "my")
                      (srcloc 'string 1 0 1 2))
-       (srcloc-token (token 'WHITESPACE " ")
+       (srcloc-token (token 'WHITESPACE " " #:skip? #t)
                      (srcloc 'string 1 2 3 1))
-       (srcloc-token (token 'COMMON-NAME "phone")
+       (srcloc-token (token 'LOWER-NAME "phone")
                      (srcloc 'string 1 3 4 5))))
 
 (check-equal?
  (lex "WHAT THE HELL")
  (list (srcloc-token (token 'PROPER-NAME "WHAT")
                      (srcloc 'string 1 0 1 4))
-       (srcloc-token (token 'WHITESPACE " ")
+       (srcloc-token (token 'WHITESPACE " " #:skip? #t)
                      (srcloc 'string 1 4 5 1))
        (srcloc-token (token 'PROPER-NAME "THE")
                      (srcloc 'string 1 5 6 3))
-       (srcloc-token (token 'WHITESPACE " ")
+       (srcloc-token (token 'WHITESPACE " " #:skip? #t)
                      (srcloc 'string 1 8 9 1))
        (srcloc-token (token 'PROPER-NAME "HELL")
                      (srcloc 'string 1 9 10 4))))
