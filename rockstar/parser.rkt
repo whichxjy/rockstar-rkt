@@ -1,18 +1,49 @@
 #lang brag
 
+;; Rockstar program
 r-program : [r-line] (NEWLINE [r-line])*
+;; Line
 r-line : r-statement
+
+;; Statement
 r-statement : r-assignment
-r-assignment : r-put
-r-put : "Put" r-expr "into" r-var
+;; Assignment
+r-assignment : r-put | r-let
+;; Put
+r-put : ("Put" | "put") r-expr "into" r-var
+;; Let
+r-let : ("Let" | "let") r-var "be" r-expr
+
+;; Expression
+r-expr : r-constant | r-literal | r-expr
+;; Constant
+r-constant : r-mysterious | r-null | r-boolean
+;; Literal
+r-literal : r-number | r-string
+
+;; Mysterious
+r-mysterious : "mysterious"
+;; Null
+r-null : "null" | "nothing" | "nowhere"
+       | "nobody" | "empty" | "gone"
+;; Boolean
+r-boolean : r-true | r-false
+r-true : "true" | "right" | "yes" | "ok"
+r-false : "false" | "wrong" | "no" | "lies"
+;; Number
+r-number : NUMBER
+;; String
+r-string : STRING
+
 ;; Variable
 r-var : r-simple-var | r-common-var | r-proper-var
 ;; Simple Variable
 r-simple-name : NORMAL-NAME | LOWER-NAME | PROPER-NAME
 r-simple-var : r-simple-name
 ;; Common Variable
+r-common-var-prefix : "It" | "He" | "She"
 r-common-name : LOWER-NAME
 r-common-var : "my" r-common-name
 ;; Proper Variable
 r-proper-name : PROPER-NAME
-r-proper-var : r-proper-name+
+r-proper-var : r-proper-name r-proper-name+
