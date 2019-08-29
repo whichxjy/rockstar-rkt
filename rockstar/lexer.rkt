@@ -4,18 +4,12 @@
 
 ;; Variable reserved term
 (define (variable-reserved-term? str)
-  (or (string=? str "a")
-      (string=? str "an")
-      (string=? str "the")
-      (string=? str "my")
-      (string=? str "or")
-      (string=? str "your")
-      (string=? str "A")
-      (string=? str "An")
-      (string=? str "The")
-      (string=? str "My")
-      (string=? str "Or")
-      (string=? str "Your")))
+  (or (string=? str "A") (string=? str "a")
+      (string=? str "An") (string=? str "an")
+      (string=? str "The") (string=? str "the")
+      (string=? str "My") (string=? str "my")
+      (string=? str "Or") (string=? str "or")
+      (string=? str "Your") (string=? str "your")))
 
 ;; Pronoun reserved term
 (define (pronoun-reserved-term? str)

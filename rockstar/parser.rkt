@@ -41,9 +41,31 @@ r-var : r-simple-var | r-common-var | r-proper-var
 r-simple-name : NORMAL-NAME | LOWER-NAME | PROPER-NAME
 r-simple-var : r-simple-name
 ;; Common Variable
-r-common-var-prefix : "It" | "He" | "She"
+r-common-var-prefix : "A" | "a"
+                    | "An" | "an"
+                    | "The" | "the"
+                    | "My" | "my"
+                    | "Or" | "or"
+                    | "Your" | "your"
 r-common-name : LOWER-NAME
-r-common-var : "my" r-common-name
+r-common-var : r-common-var-prefix r-common-name
 ;; Proper Variable
 r-proper-name : PROPER-NAME
 r-proper-var : r-proper-name r-proper-name+
+
+;; Pronoun
+r-pronoun : "It" | "it"
+          | "He" | "he"
+          | "She" | "she"
+          | "Him" | "him"
+          | "Her" | "her"
+          | "They" | "they"
+          | "Them"| "them"
+          | "Ze" | "ze"
+          | "Hir" | "hir"
+          | "Zie" | "zie"
+          | "Zir" | "zir"
+          | "Xe" | "xe"
+          | "Xem" | "xem"
+          | "Ve" | "ve"
+          | "Ver" | "ver"

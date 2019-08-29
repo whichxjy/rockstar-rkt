@@ -152,17 +152,13 @@
                      (srcloc 'string 1 3 4 5))))
 
 (check-equal?
- (lex "WHAT THE HELL")
- (list (srcloc-token (token 'PROPER-NAME "WHAT")
-                     (srcloc 'string 1 0 1 4))
-       (srcloc-token (token 'WHITESPACE " " #:skip? #t)
-                     (srcloc 'string 1 4 5 1))
-       (srcloc-token (token 'PROPER-NAME "THE")
-                     (srcloc 'string 1 5 6 3))
+ (lex "Customer ID")
+ (list (srcloc-token (token 'PROPER-NAME "Customer")
+                     (srcloc 'string 1 0 1 8))
        (srcloc-token (token 'WHITESPACE " " #:skip? #t)
                      (srcloc 'string 1 8 9 1))
-       (srcloc-token (token 'PROPER-NAME "HELL")
-                     (srcloc 'string 1 9 10 4))))
+       (srcloc-token (token 'PROPER-NAME "ID")
+                     (srcloc 'string 1 9 10 2))))
 
 ;; Number
 
