@@ -5,16 +5,14 @@ r-line : r-statement
 r-statement : r-assignment
 r-assignment : r-put
 r-put : "Put" r-expr "into" r-var
-letter : upper-case-letter | lower-case-letter
-upper-case-letter : "A" | "B" | "C" | "D" | "E"
-                  | "F" | "G" | "H" | "I" | "J"
-                  | "K" | "L" | "M" | "N" | "O"
-                  | "P" | "Q" | "R" | "S" | "T"
-                  | "U" | "V" | "W" | "X" | "Y"
-                  | "Z"
-lower-case-letter : "a" | "b" | "c" | "d" | "e"
-                  | "f" | "g" | "h" | "i" | "j"
-                  | "k" | "l" | "m" | "n" | "o"
-                  | "p" | "q" | "r" | "s" | "t"
-                  | "u" | "v" | "w" | "x" | "y"
-                  | "z"
+;; Variable
+r-var : r-simple-var | r-common-var | r-proper-var
+;; Simple Variable
+r-simple-name : NORMAL-NAME | LOWER-NAME | PROPER-NAME
+r-simple-var : r-simple-name
+;; Common Variable
+r-common-name : LOWER-NAME
+r-common-var : "my" r-common-name
+;; Proper Variable
+r-proper-name : PROPER-NAME
+r-proper-var : r-proper-name+

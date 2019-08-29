@@ -116,23 +116,12 @@
        (srcloc-token (token 'NEWLINE "\n")
                      (srcloc 'string 1 8 9 1))))
 
-;; Mix
-
 (check-equal?
  (lex "ain't ")
  (list (srcloc-token (token 'SIMPLE-NAME "aint")
                      (srcloc 'string 1 0 1 5))
        (srcloc-token (token 'WHITESPACE " ")
                      (srcloc 'string 1 5 6 1))))
-
-(check-equal?
- (lex "my phone")
- (list (srcloc-token (token "my" "my")
-                     (srcloc 'string 1 0 1 2))
-       (srcloc-token (token 'WHITESPACE " ")
-                     (srcloc 'string 1 2 3 1))
-       (srcloc-token (token 'SIMPLE-NAME "phone")
-                     (srcloc 'string 1 3 4 5))))
 
 ;; Reserved terms
 
@@ -145,6 +134,35 @@
  (lex "let")
  (list (srcloc-token (token "let" "let")
                      (srcloc 'string 1 0 1 3))))
+
+(check-equal?
+ (lex "t'r'u'e")
+ (list (srcloc-token (token "true" "true")
+                     (srcloc 'string 1 0 1 7))))
+
+;; Name
+
+(check-equal?
+ (lex "my phone")
+ (list (srcloc-token (token "my" "my")
+                     (srcloc 'string 1 0 1 2))
+       (srcloc-token (token 'WHITESPACE " ")
+                     (srcloc 'string 1 2 3 1))
+       (srcloc-token (token 'COMMON-NAME "phone")
+                     (srcloc 'string 1 3 4 5))))
+
+(check-equal?
+ (lex "WHAT THE HELL")
+ (list (srcloc-token (token 'PROPER-NAME "WHAT")
+                     (srcloc 'string 1 0 1 4))
+       (srcloc-token (token 'WHITESPACE " ")
+                     (srcloc 'string 1 4 5 1))
+       (srcloc-token (token 'PROPER-NAME "THE")
+                     (srcloc 'string 1 5 6 3))
+       (srcloc-token (token 'WHITESPACE " ")
+                     (srcloc 'string 1 8 9 1))
+       (srcloc-token (token 'PROPER-NAME "HELL")
+                     (srcloc 'string 1 9 10 4))))
 
 ;; Number
 

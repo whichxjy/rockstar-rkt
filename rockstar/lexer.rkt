@@ -111,7 +111,7 @@
 (define (only-lower-case? str)
   (and (string? str)
        (positive? (string-length str))
-       (andmap char-upper-case? (string->list str))))
+       (andmap char-lower-case? (string->list str))))
 
 ;; Return #t if str contains only letters (a-z & A-Z), #f otherwise.
 (define (only-letters? str)
@@ -142,9 +142,9 @@
         [(first-letter-upper-case? item)
          (token 'PROPER-NAME item)]
         [(only-lower-case? item)
-         (token 'COMMON-NAME item)]
+         (token 'LOWER-NAME item)]
         [(only-letters? item)
-         (token 'SIMPLE-NAME item)]
+         (token 'NORMAL-NAME item)]
         [else
          (error "Something is Wrong")]))]
    ;; Ignored other single quotes
