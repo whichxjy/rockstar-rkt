@@ -2,110 +2,98 @@
 
 (require brag/support)
 
-;; Variable reserved term
-(define (variable-reserved-term? str)
-  (or (string=? str "A") (string=? str "a")
-      (string=? str "An") (string=? str "an")
-      (string=? str "The") (string=? str "the")
-      (string=? str "My") (string=? str "my")
-      (string=? str "Or") (string=? str "or")
-      (string=? str "Your") (string=? str "your")))
+;; Variable reserved terms
+(define-lex-abbrev variable-reserved-terms
+  (:or "A"    "a"
+       "An"   "an"
+       "The"  "the"
+       "My"   "my"
+       "Or"   "my"
+       "Your" "your"))
 
-;; Pronoun reserved term
-(define (pronoun-reserved-term? str)
-  (or (string=? str "It") (string=? str "it")
-      (string=? str "He") (string=? str "he")
-      (string=? str "She") (string=? str "she")
-      (string=? str "Him") (string=? str "him")
-      (string=? str "Her") (string=? str "her")
-      (string=? str "They") (string=? str "they")
-      (string=? str "Them") (string=? str "them")
-      (string=? str "Ze") (string=? str "ze")
-      (string=? str "Hir") (string=? str "hir")
-      (string=? str "Zie") (string=? str "zie")
-      (string=? str "Zir") (string=? str "zir")
-      (string=? str "Xe") (string=? str "xe")
-      (string=? str "Xem") (string=? str "xem")
-      (string=? str "Ve") (string=? str "ve")
-      (string=? str "Ver") (string=? str "ver")))
+;; Pronoun reserved terms
+(define-lex-abbrev pronoun-reserved-terms
+  (:or "It"   "it"
+       "He"   "he"
+       "She"  "she"
+       "Him"  "him"
+       "Her"  "her"
+       "They" "they"
+       "Them" "them"
+       "Ze"   "ze"
+       "Hir"  "hir"
+       "Zie"  "zie"
+       "Zir"  "zir"
+       "Xe"   "xe"
+       "Xem"  "xem"
+       "Ve"   "ve"
+       "Ver"  "ver"))
 
-;; Mysterious reserved term
-(define (mysterious-reserved-term? str)
-  (or (string=? str "Mysterious")
-      (string=? str "mysterious")))
+;; Mysterious reserved terms
+(define-lex-abbrev mysterious-reserved-terms
+  (:or "Mysterious" "mysterious"))
 
-;; Null reserved term
-(define (null-reserved-term? str)
-  (or (string=? str "Null")
-      (string=? str "null")
-      (string=? str "nothing")
-      (string=? str "nowhere")
-      (string=? str "nobody")
-      (string=? str "empty")
-      (string=? str "gone")))
+;; Null reserved terms
+(define-lex-abbrev null-reserved-terms
+  (:or "Null"
+       "null"
+       "nothing"
+       "nowhere"
+       "nobody"
+       "empty"
+       "gone"))
 
-;; Boolean reserved term
-(define (boolean-reserved-term? str)
-  (or (string=? str "Boolean")
-      (string=? str "true")
-      (string=? str "false")
-      (string=? str "maybe")
-      (string=? str "definitely maybe")
-      (string=? str "right")
-      (string=? str "yes")
-      (string=? str "ok")
-      (string=? str "wrong")
-      (string=? str "no")
-      (string=? str "lies")))
+;; Boolean reserved terms
+(define-lex-abbrev boolean-reserved-terms
+  (:or "Boolean"
+       "true"
+       "false"
+       "maybe"
+       "definitely maybe"
+       "right"
+       "yes"
+       "ok"
+       "wrong"
+       "no"
+       "lies"))
 
-;; Type reserved term
-(define (type-reserved-term? str)
-  (or (mysterious-reserved-term? str)
-      (null-reserved-term? str)
-      (boolean-reserved-term? str)))
+;; Type reserved terms
+(define-lex-abbrev type-reserved-terms
+  (:or mysterious-reserved-terms
+       null-reserved-terms
+       boolean-reserved-terms))
 
-;; Assignment reserved term
-(define (assignment-reserved-term? str)
-  (or (string=? str "Put")
-      (string=? str "put")
-      (string=? str "into")
-      (string=? str "Let")
-      (string=? str "let")
-      (string=? str "be")))
+;; Assignment reserved terms
+(define-lex-abbrev assignment-reserved-terms
+  (:or "Put" "put" "into"
+       "Let" "let" "be"))
 
-;; Operator reserved term
-(define (operator-reserved-term? str)
-  (or (string=? str "+")
-      (string=? str "plus")
-      (string=? str "with")
-      (string=? str "-")
-      (string=? str "minus")
-      (string=? str "without")
-      (string=? str "*")
-      (string=? str "times")
-      (string=? str "of")
-      (string=? str "/")
-      (string=? str "over")))
+;; Operator reserved terms
+(define-lex-abbrev operator-reserved-terms
+  (:or "+" "plus" "with"
+       "-" "minus" "without"
+       "*" "times" "of"
+       "/" "over"))
 
-;; Function Reserved term
-(define (function-reserved-term? str)
-  (or (string=? str "takes")
-      (string=? str "taking")
-      (string=? str "Give")
-      (string=? str "back")
-      (string=? str "and")
-      (string=? str ",")
-      (string=? str "&")
-      (string=? str "n")))
+;; Function Reserved terms
+(define-lex-abbrev function-reserved-terms
+  (:or "takes"
+       "taking"
+       "Give back"
+       "and"
+       ","
+       "&"
+       ", and"
+       "n"))
 
-;; Reserved term
-(define (reserved-term? str)
-  (or (variable-reserved-term? str)
-      (pronoun-reserved-term? str)
-      (type-reserved-term? str)
-      (assignment-reserved-term? str)
-      (operator-reserved-term? str)
-      (function-reserved-term? str)))
+;; Reserved terms
+(define-lex-abbrev reserved-terms
+  (:or variable-reserved-terms
+       pronoun-reserved-terms
+       type-reserved-terms
+       assignment-reserved-terms
+       operator-reserved-terms
+       function-reserved-terms))
 
 ;; Return #t if str starts with an uppercase letter, #f otherwise.
 (define (first-letter-upper-case? str)
@@ -124,10 +112,6 @@
   (and (string? str)
        (positive? (string-length str))
        (andmap char-alphabetic? (string->list str))))
-
-;; Reserved terms
-(define-lex-abbrev reserved-terms
-  (:or "You" "Me"))
 
 ;; Create lexer
 (define (rockstar-lexer ip)
