@@ -19,6 +19,14 @@
 (define-lex-abbrev common-var
   (:seq common-var-prefix (:+ whitespace) (:+ lower-case)))
 
+;; Proper noun
+(define-lex-abbrev proper-noun
+  (:seq upper-case (:* alphabetic)))
+
+;; Proper variable
+(define-lex-abbrev proper-var
+  (:seq proper-noun (:* (:seq " " proper-noun))))
+
 ;; Pronoun reserved terms
 (define-lex-abbrev pronoun-reserved-terms
   (:or "It"   "it"
@@ -160,8 +168,15 @@
         ;; Common variable
         [common-var
          (token 'COMMON-VAR
-                (string-downcase
-                 (string-join (string-split lexeme) "-")))]
+                (string-join
+                 (map string-downcase
+                      (string-split lexeme)) "-"))]
+        ;; Proper variable
+        [proper-var
+         (token 'PROPER-VAR
+                (string-join
+                 (map string-titlecase
+                      (string-split lexeme)) "-"))]
         ;; Number
         [(:or (:+ numeric)
               (:seq (:+ numeric) "." (:+ numeric)))
