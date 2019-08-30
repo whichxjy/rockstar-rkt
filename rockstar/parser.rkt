@@ -4,7 +4,7 @@
 r-program : [(r-line | r-func-def)] (NEWLINE [(r-line | r-func-def)])*
 
 ;; Line
-r-line : r-statement | r-func-return
+r-line : r-statement | r-func-return | r-string
 
 ;; Statement
 r-statement : r-assignment
