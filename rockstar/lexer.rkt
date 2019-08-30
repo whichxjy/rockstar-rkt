@@ -27,8 +27,8 @@
 (define-lex-abbrev proper-var
   (:seq proper-noun (:* (:seq " " proper-noun))))
 
-;; Pronoun reserved terms
-(define-lex-abbrev pronoun-reserved-terms
+;; Pronoun
+(define-lex-abbrev pronoun
   (:or "It"   "it"
        "He"   "he"
        "She"  "she"
@@ -104,29 +104,10 @@
 
 ;; Reserved terms
 (define-lex-abbrev reserved-terms
-  (:or pronoun-reserved-terms
-       type-reserved-terms
+  (:or type-reserved-terms
        assignment-reserved-terms
        operator-reserved-terms
        function-reserved-terms))
-
-;; Return #t if str starts with an uppercase letter, #f otherwise.
-(define (first-letter-upper-case? str)
-  (and (string? str)
-       (positive? (string-length str))
-       (char-upper-case? (string-ref str 0))))
-
-;; Return #t if str contains only lowercase letters (a-z), #f otherwise.
-(define (only-lower-case? str)
-  (and (string? str)
-       (positive? (string-length str))
-       (andmap char-lower-case? (string->list str))))
-
-;; Return #t if str contains only letters (a-z & A-Z), #f otherwise.
-(define (only-letters? str)
-  (and (string? str)
-       (positive? (string-length str))
-       (andmap char-alphabetic? (string->list str))))
 
 ;; Create lexer
 (define (rockstar-lexer ip)
@@ -177,6 +158,10 @@
                 (string-join
                  (map string-titlecase
                       (string-split lexeme)) "-"))]
+        ;; Pronoun
+        [pronoun
+         (token 'PRONOUN
+                (string-downcase lexeme))]
         ;; Number
         [(:or (:+ numeric)
               (:seq (:+ numeric) "." (:+ numeric)))
