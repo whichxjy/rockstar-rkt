@@ -2,6 +2,10 @@
 
 (require brag/support)
 
+;; Simple variable
+(define-lex-abbrev simple-var
+  (:+ alphabetic))
+
 ;; Common variable prefix
 (define-lex-abbrev common-var-prefix
   (:or "A"    "a"
@@ -149,6 +153,10 @@
         [reserved-terms (token lexeme lexeme)]
         ;; Whitespace
         [(:+ whitespace) (token 'WHITESPACE lexeme #:skip? #t)]
+        ;; Simple variable
+        [simple-var
+         (token 'SIMPLE-VAR
+                (string-downcase lexeme))]
         ;; Common variable
         [common-var
          (token 'COMMON-VAR
