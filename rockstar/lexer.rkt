@@ -2,14 +2,18 @@
 
 (require brag/support)
 
-;; Variable reserved terms
-(define-lex-abbrev variable-reserved-terms
+;; Common variable prefix
+(define-lex-abbrev common-var-prefix
   (:or "A"    "a"
        "An"   "an"
        "The"  "the"
        "My"   "my"
        "Or"   "my"
        "Your" "your"))
+
+;; Common variable
+(define-lex-abbrev common-var
+  (:seq common-var-prefix (:+ whitespace) (:+ lower-case)))
 
 ;; Pronoun reserved terms
 (define-lex-abbrev pronoun-reserved-terms
@@ -88,8 +92,7 @@
 
 ;; Reserved terms
 (define-lex-abbrev reserved-terms
-  (:or variable-reserved-terms
-       pronoun-reserved-terms
+  (:or pronoun-reserved-terms
        type-reserved-terms
        assignment-reserved-terms
        operator-reserved-terms
@@ -146,6 +149,11 @@
         [reserved-terms (token lexeme lexeme)]
         ;; Whitespace
         [(:+ whitespace) (token 'WHITESPACE lexeme #:skip? #t)]
+        ;; Common variable
+        [common-var
+         (token 'COMMON-VAR
+                (string-downcase
+                 (string-join (string-split lexeme) "-")))]
         ;; Number
         [(:or (:+ numeric)
               (:seq (:+ numeric) "." (:+ numeric)))
