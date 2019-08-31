@@ -22,6 +22,6 @@
         [else
          (write-char ch op)])
       (loop)))
-  op)
+  (open-input-string (get-output-string op)))
 
 (provide preprocess)

@@ -4,7 +4,7 @@
 
 ;; Unit tests for preprocessor
 (define (pre str)
-  (get-output-string (preprocess (open-input-string str))))
+  (port->string (preprocess (open-input-string str))))
 
 (check-equal? (pre "") "")
 
