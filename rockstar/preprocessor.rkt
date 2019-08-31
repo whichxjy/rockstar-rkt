@@ -9,10 +9,10 @@
         ;; avoid ignoring the single quote in string
         [(eqv? (peek-char ip) #\")
          (write (read ip) op)]
-        ;; sigle quote that is not in string
+        ;; single quote that is not in string
         [(eqv? ch #\')
          ;; 1. replace the single quote followed by a lowercase 's' with " is "
-         ;; 2. all other single quotes are then ignored
+         ;; 2. all other single quotes are ignored
          (define next-two-char (peek-string 2 0 ip))
          (when (and (not (eof-object? next-two-char))
                     (or (string=? next-two-char "s ")

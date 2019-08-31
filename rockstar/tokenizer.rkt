@@ -1,6 +1,6 @@
 #lang br
 
-(require "lexer.rkt" brag/support)
+(require "lexer.rkt" "preprocessor.rkt" brag/support)
 
 ;; Make tokenizer
 (define (make-tokenizer ip [path #f])
