@@ -2,167 +2,158 @@
 
 (require brag/support)
 
-;; Variable reserved term
-(define (variable-reserved-term? str)
-  (or (string=? str "A") (string=? str "a")
-      (string=? str "An") (string=? str "an")
-      (string=? str "The") (string=? str "the")
-      (string=? str "My") (string=? str "my")
-      (string=? str "Or") (string=? str "or")
-      (string=? str "Your") (string=? str "your")))
+;; Simple variable
+(define-lex-abbrev simple-var
+  (:+ alphabetic))
 
-;; Pronoun reserved term
-(define (pronoun-reserved-term? str)
-  (or (string=? str "It") (string=? str "it")
-      (string=? str "He") (string=? str "he")
-      (string=? str "She") (string=? str "she")
-      (string=? str "Him") (string=? str "him")
-      (string=? str "Her") (string=? str "her")
-      (string=? str "They") (string=? str "they")
-      (string=? str "Them") (string=? str "them")
-      (string=? str "Ze") (string=? str "ze")
-      (string=? str "Hir") (string=? str "hir")
-      (string=? str "Zie") (string=? str "zie")
-      (string=? str "Zir") (string=? str "zir")
-      (string=? str "Xe") (string=? str "xe")
-      (string=? str "Xem") (string=? str "xem")
-      (string=? str "Ve") (string=? str "ve")
-      (string=? str "Ver") (string=? str "ver")))
+;; Common variable prefix
+(define-lex-abbrev common-var-prefix
+  (:or "A"    "a"
+       "An"   "an"
+       "The"  "the"
+       "My"   "my"
+       "Or"   "my"
+       "Your" "your"))
 
-;; Mysterious reserved term
-(define (mysterious-reserved-term? str)
-  (or (string=? str "Mysterious")
-      (string=? str "mysterious")))
+;; Common variable
+(define-lex-abbrev common-var
+  (:seq common-var-prefix (:+ whitespace) (:+ lower-case)))
 
-;; Null reserved term
-(define (null-reserved-term? str)
-  (or (string=? str "Null")
-      (string=? str "null")
-      (string=? str "nothing")
-      (string=? str "nowhere")
-      (string=? str "nobody")
-      (string=? str "empty")
-      (string=? str "gone")))
+;; Proper noun
+(define-lex-abbrev proper-noun
+  (:seq upper-case (:* alphabetic)))
 
-;; Boolean reserved term
-(define (boolean-reserved-term? str)
-  (or (string=? str "Boolean")
-      (string=? str "true")
-      (string=? str "false")
-      (string=? str "maybe")
-      (string=? str "definitely maybe")
-      (string=? str "right")
-      (string=? str "yes")
-      (string=? str "ok")
-      (string=? str "wrong")
-      (string=? str "no")
-      (string=? str "lies")))
+;; Proper variable
+(define-lex-abbrev proper-var
+  (:seq proper-noun (:* (:seq " " proper-noun))))
 
-;; Type reserved term
-(define (type-reserved-term? str)
-  (or (mysterious-reserved-term? str)
-      (null-reserved-term? str)
-      (boolean-reserved-term? str)))
+;; Pronoun
+(define-lex-abbrev pronoun
+  (:or "It"   "it"
+       "He"   "he"
+       "She"  "she"
+       "Him"  "him"
+       "Her"  "her"
+       "They" "they"
+       "Them" "them"
+       "Ze"   "ze"
+       "Hir"  "hir"
+       "Zie"  "zie"
+       "Zir"  "zir"
+       "Xe"   "xe"
+       "Xem"  "xem"
+       "Ve"   "ve"
+       "Ver"  "ver"))
 
-;; Assignment reserved term
-(define (assignment-reserved-term? str)
-  (or (string=? str "Put")
-      (string=? str "put")
-      (string=? str "into")
-      (string=? str "Let")
-      (string=? str "let")
-      (string=? str "be")))
+;; Mysterious reserved terms
+(define-lex-abbrev mysterious-reserved-terms
+  (:or "Mysterious" "mysterious"))
 
-;; Operator reserved term
-(define (operator-reserved-term? str)
-  (or (string=? str "+")
-      (string=? str "plus")
-      (string=? str "with")
-      (string=? str "-")
-      (string=? str "minus")
-      (string=? str "without")
-      (string=? str "*")
-      (string=? str "times")
-      (string=? str "of")
-      (string=? str "/")
-      (string=? str "over")))
+;; Null reserved terms
+(define-lex-abbrev null-reserved-terms
+  (:or "Null"
+       "null"
+       "nothing"
+       "nowhere"
+       "nobody"
+       "empty"
+       "gone"))
 
-;; Function Reserved term
-(define (function-reserved-term? str)
-  (or (string=? str "takes")
-      (string=? str "taking")
-      (string=? str "Give")
-      (string=? str "back")
-      (string=? str "and")
-      (string=? str ",")
-      (string=? str "&")
-      (string=? str "n")))
+;; Boolean reserved terms
+(define-lex-abbrev boolean-reserved-terms
+  (:or "Boolean"
+       "true"
+       "false"
+       "maybe"
+       "definitely maybe"
+       "right"
+       "yes"
+       "ok"
+       "wrong"
+       "no"
+       "lies"))
 
-;; Reserved term
-(define (reserved-term? str)
-  (or (variable-reserved-term? str)
-      (pronoun-reserved-term? str)
-      (type-reserved-term? str)
-      (assignment-reserved-term? str)
-      (operator-reserved-term? str)
-      (function-reserved-term? str)))
+;; Type reserved terms
+(define-lex-abbrev type-reserved-terms
+  (:or mysterious-reserved-terms
+       null-reserved-terms
+       boolean-reserved-terms))
 
-;; Return #t if str starts with an uppercase letter, #f otherwise.
-(define (first-letter-upper-case? str)
-  (and (string? str)
-       (positive? (string-length str))
-       (char-upper-case? (string-ref str 0))))
+;; Assignment reserved terms
+(define-lex-abbrev assignment-reserved-terms
+  (:or "Put" "put" "into"
+       "Let" "let" "be"))
 
-;; Return #t if str contains only lowercase letters (a-z), #f otherwise.
-(define (only-lower-case? str)
-  (and (string? str)
-       (positive? (string-length str))
-       (andmap char-lower-case? (string->list str))))
+;; Operator reserved terms
+(define-lex-abbrev operator-reserved-terms
+  (:or "+" "plus" "with"
+       "-" "minus" "without"
+       "*" "times" "of"
+       "/" "over"))
 
-;; Return #t if str contains only letters (a-z & A-Z), #f otherwise.
-(define (only-letters? str)
-  (and (string? str)
-       (positive? (string-length str))
-       (andmap char-alphabetic? (string->list str))))
+;; Function Reserved terms
+(define-lex-abbrev function-reserved-terms
+  (:or "takes"
+       "taking"
+       "Give back"
+       "and"
+       ","
+       "&"
+       ", and"
+       "n"))
+
+;; Reserved terms
+(define-lex-abbrev reserved-terms
+  (:or type-reserved-terms
+       assignment-reserved-terms
+       operator-reserved-terms
+       function-reserved-terms))
 
 ;; Create lexer
-(define rockstar-lexer
-  (lexer-srcloc
-   ;; Newline
-   ["\n" (token 'NEWLINE lexeme)]
-   ;; Comment
-   [(from/to "(" ")") (token 'COMMENT #:skip? #t)]
-   ;; Whitespace
-   [whitespace (token 'WHITESPACE lexeme #:skip? #t)]
-   ;; Quote s
-   [(:seq (:+ "'") "s" (:+ whitespace)) (token 'QUOTE-S lexeme)]
-   ;; Item (Ignored single quote)
-   [(:- (from/stop-before (:+ (:or alphabetic "'")) (:or whitespace "\n"))
-        (:or (:seq any-string (:seq (:+ "'") "s" (:+ whitespace)) any-string)
-             (:seq any-string (:seq (:+ "'") "s"))
-             (:seq any-string (:+ "'"))))
-    (let ([item (string-replace lexeme "'" "")])
-      (cond
-        [(reserved-term? item)
-         (token item item)]
-        [(first-letter-upper-case? item)
-         (token 'PROPER-NAME item)]
-        [(only-lower-case? item)
-         (token 'LOWER-NAME item)]
-        [(only-letters? item)
-         (token 'NORMAL-NAME item)]
-        [else
-         (error "Something is Wrong")]))]
-   ;; Ignored other single quotes
-   ["'" (token 'ignored-quote #:skip? #t)]
-   ;; Number
-   [(:or (:+ numeric)
-         (:seq (:+ numeric) "." (:+ numeric)))
-    (token 'NUMBER (string->number lexeme))]
-   ;; String
-   [(from/to "\"" "\"")
-    (token 'STRING
-           (substring lexeme
-                      1 (sub1 (string-length lexeme))))]))
+(define (rockstar-lexer ip)
+  (cond
+    ;; Comment
+    [(eqv? (peek-char ip) #\()
+     (let ([lex (lexer-srcloc
+                 [(from/to #\( #\))
+                  (token 'COMMENT #:skip? #t)])])
+       (lex ip))]
+    ;; String
+    [(eqv? (peek-char ip) #\")
+     (token 'STRING (read ip))]
+    [else
+     (let ([lex (lexer-srcloc
+                 ;; Newline
+                 ["\n" (token 'NEWLINE lexeme)]
+                 ;; Reserved terms
+                 [reserved-terms (token lexeme lexeme)]
+                 ;; Whitespace
+                 [(:+ (:or #\space #\tab))
+                  (token 'WHITESPACE lexeme #:skip? #t)]
+                 ;; Pronoun
+                 [pronoun
+                  (token 'PRONOUN
+                         (string-downcase lexeme))]
+                 ;; Simple variable
+                 [simple-var
+                  (token 'SIMPLE-VAR
+                         (string-downcase lexeme))]
+                 ;; Common variable
+                 [common-var
+                  (token 'COMMON-VAR
+                         (string-join
+                          (map string-downcase
+                               (string-split lexeme)) "-"))]
+                 ;; Proper variable
+                 [proper-var
+                  (token 'PROPER-VAR
+                         (string-join
+                          (map string-titlecase
+                               (string-split lexeme)) "-"))]
+                 ;; Number
+                 [(:or (:+ numeric)
+                       (:seq (:+ numeric) "." (:+ numeric)))
+                  (token 'NUMBER (string->number lexeme))])])
+       (lex ip))]))
 
 (provide rockstar-lexer)
