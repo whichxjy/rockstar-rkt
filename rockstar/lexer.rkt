@@ -114,7 +114,7 @@
   (cond
     ;; Comment
     [(eqv? (peek-char ip) #\()
-     (let ([lex (lexer-srcloc
+     (let ([lex (lexer
                  [(from/to #\( #\))
                   (token 'COMMENT #:skip? #t)])])
        (lex ip))]
@@ -122,7 +122,7 @@
     [(eqv? (peek-char ip) #\")
      (token 'STRING (read ip))]
     [else
-     (let ([lex (lexer-srcloc
+     (let ([lex (lexer
                  ;; Newline
                  ["\n" (token 'NEWLINE lexeme)]
                  ;; Reserved terms
