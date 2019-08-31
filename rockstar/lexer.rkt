@@ -71,6 +71,14 @@
        "no"
        "lies"))
 
+;; Increment reserved terms
+(define-lex-abbrev increment-reserved-terms
+  (:or "Build" "up"))
+
+;; Decrement reserved terms
+(define-lex-abbrev decrement-reserved-terms
+  (:or "Knock" "down"))
+
 ;; Assignment reserved terms
 (define-lex-abbrev assignment-reserved-terms
   (:or "Put" "put" "into"
@@ -96,7 +104,9 @@
 
 ;; Reserved terms
 (define-lex-abbrev reserved-terms
-  (:or assignment-reserved-terms
+  (:or increment-reserved-terms
+       decrement-reserved-terms
+       assignment-reserved-terms
        operator-reserved-terms
        function-reserved-terms))
 

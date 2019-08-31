@@ -1,13 +1,13 @@
 #lang brag
 
 ;; Rockstar program
-r-program : [(r-line | r-func-def)] (NEWLINE [(r-line | r-func-def)])*
+r-program : [(r-line | r-func-def)] (/NEWLINE [(r-line | r-func-def)])*
 
 ;; Line
 r-line : r-statement | r-func-return
 
 ;; Statement
-r-statement : r-assignment
+r-statement : r-operation
 
 ;; Expression
 r-expr : r-constant | r-literal
@@ -32,6 +32,16 @@ r-var : SIMPLE-VAR | COMMON-VAR | PROPER-VAR
 
 ;; Pronoun
 r-pronoun : PRONOUN
+
+;; Operation
+r-operation : r-crement | r-assignment
+
+;; Increment & Decrement
+r-crement : r-increment | r-decrement
+;; Increment
+r-increment : "Build" r-var "up" ("," "up")*
+;; Decrement
+r-decrement : "Knock" r-var "down" ("," "down")*
 
 ;; Assignment
 r-assignment : r-put | r-let

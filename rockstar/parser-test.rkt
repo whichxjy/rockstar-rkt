@@ -3,7 +3,11 @@
 (require "parser.rkt" "tokenizer.rkt" brag/support)
 
 (define str #<<HERE
-"Hello \"  \t \" World"
+(Let my phone be 123)
+(Put 456 into your apple)
+(Build my world up)
+(Knock the walls down)
+(Knock the walls down, down)
 HERE
 )
 
