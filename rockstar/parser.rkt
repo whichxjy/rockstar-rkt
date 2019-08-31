@@ -4,73 +4,41 @@
 r-program : [(r-line | r-func-def)] (NEWLINE [(r-line | r-func-def)])*
 
 ;; Line
-r-line : r-statement | r-func-return | r-string
+r-line : r-statement | r-func-return
 
 ;; Statement
 r-statement : r-assignment
-;; Assignment
-r-assignment : r-put | r-let
-;; Put
-r-put : ("Put" | "put") r-expr "into" r-var
-;; Let
-r-let : ("Let" | "let") r-var "be" r-expr
 
 ;; Expression
 r-expr : r-constant | r-literal
-
+;; Literal
+r-literal : r-constant | r-number | r-string
 ;; Constant
 r-constant : r-mysterious | r-null | r-boolean
-;; Literal
-r-literal : r-number | r-string
 
 ;; Mysterious
-r-mysterious : "mysterious"
+r-mysterious : MYSTERIOUS
 ;; Null
-r-null : "null" | "nothing" | "nowhere"
-       | "nobody" | "empty" | "gone"
+r-null : NULL
 ;; Boolean
-r-boolean : r-true | r-false
-r-true : "true" | "right" | "yes" | "ok"
-r-false : "false" | "wrong" | "no" | "lies"
+r-boolean : BOOLEAN
 ;; Number
 r-number : NUMBER
 ;; String
 r-string : STRING
 
 ;; Variable
-r-var : r-simple-var | r-common-var | r-proper-var
-;; Simple Variable
-r-simple-name : NORMAL-NAME | LOWER-NAME | PROPER-NAME
-r-simple-var : r-simple-name
-;; Common Variable
-r-common-var-prefix : "A" | "a"
-                    | "An" | "an"
-                    | "The" | "the"
-                    | "My" | "my"
-                    | "Or" | "or"
-                    | "Your" | "your"
-r-common-name : LOWER-NAME
-r-common-var : r-common-var-prefix r-common-name
-;; Proper Variable
-r-proper-name : PROPER-NAME
-r-proper-var : r-proper-name r-proper-name+
+r-var : SIMPLE-VAR | COMMON-VAR | PROPER-VAR
 
 ;; Pronoun
-r-pronoun : "It" | "it"
-          | "He" | "he"
-          | "She" | "she"
-          | "Him" | "him"
-          | "Her" | "her"
-          | "They" | "they"
-          | "Them"| "them"
-          | "Ze" | "ze"
-          | "Hir" | "hir"
-          | "Zie" | "zie"
-          | "Zir" | "zir"
-          | "Xe" | "xe"
-          | "Xem" | "xem"
-          | "Ve" | "ve"
-          | "Ver" | "ver"
+r-pronoun : PRONOUN
+
+;; Assignment
+r-assignment : r-put | r-let
+;; Put
+r-put : ("Put" | "put") r-expr "into" r-var
+;; Let
+r-let : ("Let" | "let") r-var "be" r-expr
 
 ;; Function Definition
 r-func-def : r-func-name "takes" r-parameter (("and" | "," | "&" | ("," "and") | "n") r-parameter)*
@@ -79,7 +47,7 @@ r-func-def : r-func-name "takes" r-parameter (("and" | "," | "&" | ("," "and") |
              r-func-return
              NEWLINE
 ;; Function Return Statement
-r-func-return : "Give" "back" r-expr
+r-func-return : "Give back" r-expr
 ;; Function Call
 r-func-call : r-func-name "taking" r-argument (("," | "&" | ("," "and") | "n") r-argument)*
 ;; Function Name

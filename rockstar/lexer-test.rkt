@@ -42,16 +42,8 @@
 ;; Reserved terms
 
 (check-equal?
- (lex "mysterious")
- (list (token "mysterious" "mysterious")))
-
-(check-equal?
  (lex "taking")
  (list (token "taking" "taking")))
-
-(check-equal?
- (lex "true")
- (list (token "true" "true")))
 
 ;; Whitespace
 
@@ -94,6 +86,24 @@
 (check-equal?
  (lex "It")
  (list (token 'PRONOUN "it")))
+
+;; Mysterious
+
+(check-equal?
+ (lex "mysterious")
+ (list (token 'MYSTERIOUS "mysterious")))
+
+;; Null
+
+(check-equal?
+ (lex "nothing")
+ (list (token 'NULL "nothing")))
+
+;; Boolean
+
+(check-equal?
+ (lex "true")
+ (list (token 'BOOLEAN "true")))
 
 ;; Number
 

@@ -45,24 +45,22 @@
        "Ve"   "ve"
        "Ver"  "ver"))
 
-;; Mysterious reserved terms
-(define-lex-abbrev mysterious-reserved-terms
+;; Mysterious
+(define-lex-abbrev mysterious-type
   (:or "Mysterious" "mysterious"))
 
-;; Null reserved terms
-(define-lex-abbrev null-reserved-terms
-  (:or "Null"
-       "null"
+;; Null
+(define-lex-abbrev null-type
+  (:or "null"
        "nothing"
        "nowhere"
        "nobody"
        "empty"
        "gone"))
 
-;; Boolean reserved terms
-(define-lex-abbrev boolean-reserved-terms
-  (:or "Boolean"
-       "true"
+;; Boolean
+(define-lex-abbrev boolean-type
+  (:or "true"
        "false"
        "maybe"
        "definitely maybe"
@@ -72,12 +70,6 @@
        "wrong"
        "no"
        "lies"))
-
-;; Type reserved terms
-(define-lex-abbrev type-reserved-terms
-  (:or mysterious-reserved-terms
-       null-reserved-terms
-       boolean-reserved-terms))
 
 ;; Assignment reserved terms
 (define-lex-abbrev assignment-reserved-terms
@@ -104,8 +96,7 @@
 
 ;; Reserved terms
 (define-lex-abbrev reserved-terms
-  (:or type-reserved-terms
-       assignment-reserved-terms
+  (:or assignment-reserved-terms
        operator-reserved-terms
        function-reserved-terms))
 
@@ -130,6 +121,19 @@
                  ;; Whitespace
                  [(:+ (:or #\space #\tab))
                   (token 'WHITESPACE lexeme #:skip? #t)]
+                 ;; Mysterious
+                 [mysterious-type
+                  (token 'MYSTERIOUS lexeme)]
+                 ;; Null
+                 [null-type
+                  (token 'NULL lexeme)]
+                 ;; Boolean
+                 [boolean-type
+                  (token 'BOOLEAN lexeme)]
+                 ;; Number
+                 [(:or (:+ numeric)
+                       (:seq (:+ numeric) "." (:+ numeric)))
+                  (token 'NUMBER (string->number lexeme))]
                  ;; Pronoun
                  [pronoun
                   (token 'PRONOUN
@@ -149,11 +153,7 @@
                   (token 'PROPER-VAR
                          (string-join
                           (map string-titlecase
-                               (string-split lexeme)) "-"))]
-                 ;; Number
-                 [(:or (:+ numeric)
-                       (:seq (:+ numeric) "." (:+ numeric)))
-                  (token 'NUMBER (string->number lexeme))])])
+                               (string-split lexeme)) "-"))])])
        (lex ip))]))
 
 (provide rockstar-lexer)
