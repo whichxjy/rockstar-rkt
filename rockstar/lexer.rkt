@@ -128,7 +128,12 @@
                  ;; Reserved terms
                  [reserved-terms (token lexeme lexeme)]
                  ;; Whitespace
-                 [(:+ whitespace) (token 'WHITESPACE lexeme #:skip? #t)]
+                 [(:+ (:or #\space #\tab))
+                  (token 'WHITESPACE lexeme #:skip? #t)]
+                 ;; Pronoun
+                 [pronoun
+                  (token 'PRONOUN
+                         (string-downcase lexeme))]
                  ;; Simple variable
                  [simple-var
                   (token 'SIMPLE-VAR
@@ -145,10 +150,6 @@
                          (string-join
                           (map string-titlecase
                                (string-split lexeme)) "-"))]
-                 ;; Pronoun
-                 [pronoun
-                  (token 'PRONOUN
-                         (string-downcase lexeme))]
                  ;; Number
                  [(:or (:+ numeric)
                        (:seq (:+ numeric) "." (:+ numeric)))
