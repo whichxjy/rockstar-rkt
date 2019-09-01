@@ -95,10 +95,6 @@
        "*" "times" "of"
        "/" "over"))
 
-;; Logical Operation
-(define-lex-abbrev logical-reserved-terms
-  (:or "and" "or" "nor" "not"))
-
 ;; Comparison reserved terms
 (define-lex-abbrev comparison-reserved-terms
   (:or "is" "is not" "isnt" "aint" "as" "than" 
@@ -106,6 +102,10 @@
        "lower"  "less"    "smaller" "weaker"
        "high"   "great"   "big"     "strong"
        "low"    "little"  "small"   "weak"))
+
+;; Logical Operation
+(define-lex-abbrev logical-reserved-terms
+  (:or "and" "or" "nor" "not"))
 
 ;; Function Reserved terms
 (define-lex-abbrev function-reserved-terms
@@ -129,6 +129,7 @@
        decrement-reserved-terms
        arithmetic-reserved-terms
        comparison-reserved-terms
+       logical-reserved-terms
        function-reserved-terms
        list-separator))
 
