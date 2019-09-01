@@ -13,11 +13,11 @@ r-statement : r-operation
 r-expr : r-arithmetic-expr
 
 ;; Value
-r-value : r-var | r-literal | r-pronoun
+@r-value : r-var | r-literal | r-pronoun
 ;; Literal
-r-literal : r-constant | r-number | r-string
+@r-literal : r-constant | r-number | r-string
 ;; Constant
-r-constant : r-mysterious | r-null | r-boolean
+@r-constant : r-mysterious | r-null | r-boolean
 
 ;; Operation
 r-operation : r-crement | r-assignment
@@ -40,8 +40,8 @@ r-let : ("Let" | "let") r-var "be" [r-compoundable-op] r-expr
 r-arithmetic-expr : r-add-expr | r-sub-expr
 r-add-expr : [(r-add-expr | r-sub-expr) r-add-op] (r-mul-expr | r-div-expr)
 r-sub-expr : [(r-add-expr | r-sub-expr) r-sub-op] (r-mul-expr | r-div-expr)
-r-mul-expr : [(r-mul-expr | r-div-expr) r-mul-op] r-value
-r-div-expr : [(r-mul-expr | r-div-expr) r-div-op] r-value
+r-mul-expr : [(r-mul-expr | r-div-expr) r-mul-op] r-value-list
+r-div-expr : [(r-mul-expr | r-div-expr) r-div-op] r-value-list
 ;; Arithmetic Operator
 @r-add-op : "+" | "plus" | "with"
 @r-sub-op : "-" | "minus" | "without"
@@ -52,7 +52,7 @@ r-div-expr : [(r-mul-expr | r-div-expr) r-div-op] r-value
 @r-compoundable-op : r-add-op | r-sub-op | r-mul-op | r-div-op
 
 ;; Function Definition
-r-func-def : r-func-name "takes" r-parameter (("and" | "," | "&" | ("," "and") | "n") r-parameter)*
+r-func-def : r-func-name "takes" r-parameter (r-var-list-sep r-parameter)*
              NEWLINE
              (r-line NEWLINE)*
              r-func-return
@@ -60,27 +60,42 @@ r-func-def : r-func-name "takes" r-parameter (("and" | "," | "&" | ("," "and") |
 ;; Function Return Statement
 r-func-return : "Give back" r-expr
 ;; Function Call
-r-func-call : r-func-name "taking" r-argument (("," | "&" | ("," "and") | "n") r-argument)*
+r-func-call : r-func-name "taking" r-argument (r-expr-list-sep r-argument)*
 ;; Function Name
 r-func-name : r-var
 ;; Function Parameter
 r-parameter : r-var
 ;; Function Argument
-r-argument : r-var | r-literal
+r-argument : r-expr
+
+;; Expression List Separator
+@r-expr-list-sep : "," | "&" | ", and" | "n"
+;; Expression List
+@r-expr-list : r-expr /(r-expr-list-sep r-expr)*
+
+;; Value List Separator
+@r-value-list-sep : r-expr-list-sep | "and"
+;; Value List
+@r-value-list : r-value (/r-value-list-sep r-value)*
+
+;; Variable List Separator
+@r-var-list-sep : r-expr-list-sep | "and"
+;; Variable List
+@r-var-list : r-var (/r-var-list-sep r-var)*
 
 ;; Variable
-r-var : SIMPLE-VAR | COMMON-VAR | PROPER-VAR
+@r-var : SIMPLE-VAR | COMMON-VAR | PROPER-VAR
 
 ;; Pronoun
-r-pronoun : PRONOUN
+@r-pronoun : PRONOUN
 
 ;; Mysterious
-r-mysterious : MYSTERIOUS
+@r-mysterious : MYSTERIOUS
 ;; Null
-r-null : NULL
+@r-null : NULL
 ;; Boolean
-r-boolean : BOOLEAN
+@r-boolean : BOOLEAN
 ;; Number
-r-number : NUMBER
+@r-number : NUMBER
 ;; String
-r-string : STRING
+@r-string : STRING

@@ -99,10 +99,13 @@
 (define-lex-abbrev function-reserved-terms
   (:or "takes"
        "taking"
-       "Give back"
-       "and"
-       ","
+       "Give back"))
+
+;; List Separator
+(define-lex-abbrev list-separator
+  (:or ","
        "&"
+       "and"
        ", and"
        "n"))
 
@@ -112,7 +115,8 @@
        decrement-reserved-terms
        assignment-reserved-terms
        operator-reserved-terms
-       function-reserved-terms))
+       function-reserved-terms
+       list-separator))
 
 ;; Create lexer
 (define (rockstar-lexer ip)

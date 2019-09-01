@@ -11,8 +11,10 @@ Knock the walls down, down
 Let my bag be 123 + 456
 Put the whole of your heart into my hands
 Let the children be without fear
-Let Ta be without fear)
+Let Ta be without fear
 Let X be with 10
+Let X be 1 with 2, 3, 4)
+Let X be "foo" with "bar", and "baz"
 HERE
 )
 
