@@ -10,28 +10,14 @@ r-line : r-statement | r-func-return
 r-statement : r-operation
 
 ;; Expression
-r-expr : r-constant | r-literal
+r-expr : r-arithmetic-expr
+
+;; Value
+r-value : r-value | r-literal | r-pronoun
 ;; Literal
 r-literal : r-constant | r-number | r-string
 ;; Constant
 r-constant : r-mysterious | r-null | r-boolean
-
-;; Mysterious
-r-mysterious : MYSTERIOUS
-;; Null
-r-null : NULL
-;; Boolean
-r-boolean : BOOLEAN
-;; Number
-r-number : NUMBER
-;; String
-r-string : STRING
-
-;; Variable
-r-var : SIMPLE-VAR | COMMON-VAR | PROPER-VAR
-
-;; Pronoun
-r-pronoun : PRONOUN
 
 ;; Operation
 r-operation : r-crement | r-assignment
@@ -50,6 +36,13 @@ r-put : ("Put" | "put") r-expr "into" r-var
 ;; Let
 r-let : ("Let" | "let") r-var "be" r-expr
 
+;; Arithmetic Expression
+r-arithmetic-expr : r-add-expr | r-subtract-expr
+r-add-expr : [r-add-expr ("+" | "plus" | "with")] (r-multiply-expr | r-divide-expr)
+r-subtract-expr : [r-subtract-expr ("-" | "minus" | "without")] (r-multiply-expr | r-divide-expr)
+r-multiply-expr : [r-multiply-expr ("*" | "times" | "of")] r-value
+r-divide-expr : [r-divide-expr ("/" | "over")] r-value
+
 ;; Function Definition
 r-func-def : r-func-name "takes" r-parameter (("and" | "," | "&" | ("," "and") | "n") r-parameter)*
              NEWLINE
@@ -66,3 +59,20 @@ r-func-name : r-var
 r-parameter : r-var
 ;; Function Argument
 r-argument : r-var | r-literal
+
+;; Variable
+r-var : SIMPLE-VAR | COMMON-VAR | PROPER-VAR
+
+;; Pronoun
+r-pronoun : PRONOUN
+
+;; Mysterious
+r-mysterious : MYSTERIOUS
+;; Null
+r-null : NULL
+;; Boolean
+r-boolean : BOOLEAN
+;; Number
+r-number : NUMBER
+;; String
+r-string : STRING

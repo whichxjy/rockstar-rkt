@@ -79,17 +79,17 @@
 (define-lex-abbrev decrement-reserved-terms
   (:or "Knock" "down"))
 
-;; Assignment reserved terms
-(define-lex-abbrev assignment-reserved-terms
-  (:or "Put" "put" "into"
-       "Let" "let" "be"))
-
 ;; Operator reserved terms
 (define-lex-abbrev operator-reserved-terms
   (:or "+" "plus" "with"
        "-" "minus" "without"
        "*" "times" "of"
        "/" "over"))
+
+;; Assignment reserved terms
+(define-lex-abbrev assignment-reserved-terms
+  (:or "Put" "put" "into"
+       "Let" "let" "be"))
 
 ;; Function Reserved terms
 (define-lex-abbrev function-reserved-terms
