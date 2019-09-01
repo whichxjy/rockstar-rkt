@@ -34,13 +34,22 @@ r-put : ("Put" | "put") r-expr "into" r-var
 r-let : ("Let" | "let") r-var "be" [r-compoundable-op] r-expr
 
 ;; Expression
-r-expr : r-cmp-expr
+r-expr : r-and-expr | r-or-expr | r-nor-expr
+
+;; Boolean Expression: and & or & nor
+r-and-expr : [(r-and-expr | r-or-expr | r-nor-expr) r-and-op] r-cmp-expr
+r-or-expr : [(r-and-expr | r-or-expr | r-nor-expr) r-or-op] r-cmp-expr
+r-nor-expr : [(r-and-expr | r-or-expr | r-nor-expr) r-nor-op] r-cmp-expr
+;; Logical Operator: and & or & nor
+@r-and-op: "and"
+@r-or-op: "or"
+@r-nor-op: "nor"
 
 ;; Comparison Expression
 r-cmp-expr : [r-cmp-expr r-cmp-op] r-arithmetic-expr
 ;; Comparison Operator
 @r-cmp-op : r-equality-op | r-greater-op | r-smaller-op | r-great-op | r-small-op
-@r-equality-op : ("is" | "isnt" | "aint")
+@r-equality-op : ("is" | "is not" | "isnt" | "aint")
 @r-greater-op : r-equality-op ("higher" | "greater" | "bigger" | "stronger") "than"
 @r-smaller-op : r-equality-op ("lower" | "less" | "smaller" | "weaker") "than"
 @r-great-op : r-equality-op ("high" | "great" | "big" | "strong") "as"
@@ -83,7 +92,7 @@ r-argument : r-expr
 @r-expr-list : r-expr /(r-expr-list-sep r-expr)*
 
 ;; Value List Separator
-@r-value-list-sep : r-expr-list-sep | "and"
+@r-value-list-sep : r-expr-list-sep
 ;; Value List
 @r-value-list : r-value (/r-value-list-sep r-value)*
 

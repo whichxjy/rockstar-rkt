@@ -15,8 +15,9 @@ Let Ta be without fear
 Let X be with 10
 Let X be 1 with 2, 3, 4
 Let X be "foo" with "bar", and "baz"
-Let Abc be Tommy is nobody)
-Let truth be my sister is higher than me
+Let Abc be Tommy is nobody
+Let truth be my sister is higher than me)
+Let X be false and 1 over 0
 HERE
 )
 

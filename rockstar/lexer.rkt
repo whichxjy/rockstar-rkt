@@ -95,9 +95,13 @@
        "*" "times" "of"
        "/" "over"))
 
+;; Logical Operation
+(define-lex-abbrev logical-reserved-terms
+  (:or "and" "or" "nor" "not"))
+
 ;; Comparison reserved terms
 (define-lex-abbrev comparison-reserved-terms
-  (:or "is"   "isnt"   "aint"   "as"   "than"
+  (:or "is" "is not" "isnt" "aint" "as" "than" 
        "higher" "greater" "bigger"  "stronger"
        "lower"  "less"    "smaller" "weaker"
        "high"   "great"   "big"     "strong"
