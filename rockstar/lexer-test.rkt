@@ -65,52 +65,64 @@
  (lex "phone")
  (list (token 'SIMPLE-VAR "phone")))
 
-;; Common variable
-
 (check-equal?
- (lex "My phone")
- (list (token 'COMMON-VAR "my-phone")))
+ (lex "Let X be with 10")
+ (list (token 'Let "Let")
+       (token 'WHITESPACE " " #:skip? #t)
+       (token 'SIMPLE-VAR "x")
+       (token 'WHITESPACE " " #:skip? #t)
+       (token 'be "be")
+       (token 'WHITESPACE " " #:skip? #t)
+       (token 'with "with")
+       (token 'WHITESPACE " " #:skip? #t)
+       (token 'NUMBER 10)))
 
-(check-equal?
- (lex "An apple")
- (list (token 'COMMON-VAR "an-apple")))
+ ;; Common variable
 
-;; Proper variable
+ (check-equal?
+  (lex "My phone")
+  (list (token 'COMMON-VAR "my-phone")))
 
-(check-equal?
- (lex "Customer ID")
- (list (token 'PROPER-VAR "Customer-Id")))
+ (check-equal?
+  (lex "An apple")
+  (list (token 'COMMON-VAR "an-apple")))
 
-;; Pronoun
+ ;; Proper variable
 
-(check-equal?
- (lex "It")
- (list (token 'PRONOUN "it")))
+ (check-equal?
+  (lex "Customer ID")
+  (list (token 'PROPER-VAR "Customer-Id")))
 
-;; Mysterious
+ ;; Pronoun
 
-(check-equal?
- (lex "mysterious")
- (list (token 'MYSTERIOUS "mysterious")))
+ (check-equal?
+  (lex "It")
+  (list (token 'PRONOUN "it")))
 
-;; Null
+ ;; Mysterious
 
-(check-equal?
- (lex "nothing")
- (list (token 'NULL "nothing")))
+ (check-equal?
+  (lex "mysterious")
+  (list (token 'MYSTERIOUS "mysterious")))
 
-;; Boolean
+ ;; Null
 
-(check-equal?
- (lex "true")
- (list (token 'BOOLEAN "true")))
+ (check-equal?
+  (lex "nothing")
+  (list (token 'NULL "nothing")))
 
-;; Number
+ ;; Boolean
 
-(check-equal?
- (lex "123")
- (list (token 'NUMBER 123)))
+ (check-equal?
+  (lex "true")
+  (list (token 'BOOLEAN "true")))
 
-(check-equal?
- (lex "1.23")
- (list (token 'NUMBER 1.23)))
+ ;; Number
+
+ (check-equal?
+  (lex "123")
+  (list (token 'NUMBER 123)))
+
+ (check-equal?
+  (lex "1.23")
+  (list (token 'NUMBER 1.23)))

@@ -4,7 +4,8 @@
 
 ;; Simple variable
 (define-lex-abbrev simple-var
-  (:+ alphabetic))
+  (:- (:+ alphabetic)
+      reserved-terms))
 
 ;; Common variable prefix
 (define-lex-abbrev common-var-prefix
@@ -17,11 +18,14 @@
 
 ;; Common variable
 (define-lex-abbrev common-var
-  (:seq common-var-prefix (:+ whitespace) (:+ lower-case)))
+  (:seq common-var-prefix (:+ whitespace)
+        (:- (:+ lower-case)
+            reserved-terms)))
 
 ;; Proper noun
 (define-lex-abbrev proper-noun
-  (:seq upper-case (:* alphabetic)))
+  (:- (:seq upper-case (:* alphabetic))
+      reserved-terms))
 
 ;; Proper variable
 (define-lex-abbrev proper-var
