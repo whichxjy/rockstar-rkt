@@ -9,9 +9,6 @@ r-line : r-statement | r-func-return
 ;; Statement
 r-statement : r-operation
 
-;; Expression
-r-expr : r-arithmetic-expr
-
 ;; Value
 @r-value : r-var | r-literal | r-pronoun
 ;; Literal
@@ -36,8 +33,21 @@ r-put : ("Put" | "put") r-expr "into" r-var
 ;; Let
 r-let : ("Let" | "let") r-var "be" [r-compoundable-op] r-expr
 
+;; Expression
+r-expr : r-cmp-expr
+
+;; Comparison Expression
+r-cmp-expr : [r-cmp-expr r-cmp-op] r-arithmetic-expr
+;; Comparison Operator
+@r-cmp-op : r-equality-op | r-greater-op | r-smaller-op | r-great-op | r-small-op
+@r-equality-op : ("is" | "isnt" | "aint")
+@r-greater-op : r-equality-op ("higher" | "greater" | "bigger" | "stronger") "than"
+@r-smaller-op : r-equality-op ("lower" | "less" | "smaller" | "weaker") "than"
+@r-great-op : r-equality-op ("high" | "great" | "big" | "strong") "as"
+@r-small-op : r-equality-op ("low" | "little" | "small" | "weak") "as"
+
 ;; Arithmetic Expression
-r-arithmetic-expr : r-add-expr | r-sub-expr
+@r-arithmetic-expr : r-add-expr | r-sub-expr
 r-add-expr : [(r-add-expr | r-sub-expr) r-add-op] (r-mul-expr | r-div-expr)
 r-sub-expr : [(r-add-expr | r-sub-expr) r-sub-op] (r-mul-expr | r-div-expr)
 r-mul-expr : [(r-mul-expr | r-div-expr) r-mul-op] r-value-list
@@ -47,7 +57,6 @@ r-div-expr : [(r-mul-expr | r-div-expr) r-div-op] r-value-list
 @r-sub-op : "-" | "minus" | "without"
 @r-mul-op : "*" | "times" | "of"
 @r-div-op : "/" | "over"
-
 ;; Compoundable Operator
 @r-compoundable-op : r-add-op | r-sub-op | r-mul-op | r-div-op
 

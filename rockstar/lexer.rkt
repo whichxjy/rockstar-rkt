@@ -75,6 +75,11 @@
        "no"
        "lies"))
 
+;; Assignment reserved terms
+(define-lex-abbrev assignment-reserved-terms
+  (:or "Put" "put" "into"
+       "Let" "let" "be"))
+
 ;; Increment reserved terms
 (define-lex-abbrev increment-reserved-terms
   (:or "Build" "up"))
@@ -83,17 +88,20 @@
 (define-lex-abbrev decrement-reserved-terms
   (:or "Knock" "down"))
 
-;; Operator reserved terms
-(define-lex-abbrev operator-reserved-terms
+;; Arithmetic reserved terms
+(define-lex-abbrev arithmetic-reserved-terms
   (:or "+" "plus" "with"
        "-" "minus" "without"
        "*" "times" "of"
        "/" "over"))
 
-;; Assignment reserved terms
-(define-lex-abbrev assignment-reserved-terms
-  (:or "Put" "put" "into"
-       "Let" "let" "be"))
+;; Comparison reserved terms
+(define-lex-abbrev comparison-reserved-terms
+  (:or "is"   "isnt"   "aint"   "as"   "than"
+       "higher" "greater" "bigger"  "stronger"
+       "lower"  "less"    "smaller" "weaker"
+       "high"   "great"   "big"     "strong"
+       "low"    "little"  "small"   "weak"))
 
 ;; Function Reserved terms
 (define-lex-abbrev function-reserved-terms
@@ -111,10 +119,12 @@
 
 ;; Reserved terms
 (define-lex-abbrev reserved-terms
-  (:or increment-reserved-terms
-       decrement-reserved-terms
+  (:or common-var-prefix
        assignment-reserved-terms
-       operator-reserved-terms
+       increment-reserved-terms
+       decrement-reserved-terms
+       arithmetic-reserved-terms
+       comparison-reserved-terms
        function-reserved-terms
        list-separator))
 
