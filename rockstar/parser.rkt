@@ -13,7 +13,7 @@ r-statement : r-operation
 r-expr : r-arithmetic-expr
 
 ;; Value
-r-value : r-value | r-literal | r-pronoun
+r-value : r-var | r-literal | r-pronoun
 ;; Literal
 r-literal : r-constant | r-number | r-string
 ;; Constant
@@ -37,11 +37,16 @@ r-put : ("Put" | "put") r-expr "into" r-var
 r-let : ("Let" | "let") r-var "be" r-expr
 
 ;; Arithmetic Expression
-r-arithmetic-expr : r-add-expr | r-subtract-expr
-r-add-expr : [r-add-expr ("+" | "plus" | "with")] (r-multiply-expr | r-divide-expr)
-r-subtract-expr : [r-subtract-expr ("-" | "minus" | "without")] (r-multiply-expr | r-divide-expr)
-r-multiply-expr : [r-multiply-expr ("*" | "times" | "of")] r-value
-r-divide-expr : [r-divide-expr ("/" | "over")] r-value
+r-arithmetic-expr : r-add-expr | r-sub-expr
+r-add-expr : [(r-add-expr | r-sub-expr) r-add-op] (r-mul-expr | r-div-expr)
+r-sub-expr : [(r-add-expr | r-sub-expr) r-sub-op] (r-mul-expr | r-div-expr)
+r-mul-expr : [(r-mul-expr | r-div-expr) r-mul-op] r-value
+r-div-expr : [(r-mul-expr | r-div-expr) r-div-op] r-value
+;; Arithmetic Operator
+r-add-op : "+" | "plus" | "with"
+r-sub-op : "-" | "minus" | "without"
+r-mul-op : "*" | "times" | "of"
+r-div-op : "/" | "over"
 
 ;; Function Definition
 r-func-def : r-func-name "takes" r-parameter (("and" | "," | "&" | ("," "and") | "n") r-parameter)*
