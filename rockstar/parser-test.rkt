@@ -9,7 +9,10 @@ Build my world up
 Knock the walls down
 Knock the walls down, down
 Let my bag be 123 + 456
-Put the whole of your heart into my hands)
+Put the whole of your heart into my hands
+Let the children be without fear
+Let Ta be without fear)
+Let X be with 10
 HERE
 )
 

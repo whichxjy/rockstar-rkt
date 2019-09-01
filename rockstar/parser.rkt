@@ -34,7 +34,7 @@ r-assignment : r-put | r-let
 ;; Put
 r-put : ("Put" | "put") r-expr "into" r-var
 ;; Let
-r-let : ("Let" | "let") r-var "be" r-expr
+r-let : ("Let" | "let") r-var "be" [r-compoundable-op] r-expr
 
 ;; Arithmetic Expression
 r-arithmetic-expr : r-add-expr | r-sub-expr
@@ -43,10 +43,13 @@ r-sub-expr : [(r-add-expr | r-sub-expr) r-sub-op] (r-mul-expr | r-div-expr)
 r-mul-expr : [(r-mul-expr | r-div-expr) r-mul-op] r-value
 r-div-expr : [(r-mul-expr | r-div-expr) r-div-op] r-value
 ;; Arithmetic Operator
-r-add-op : "+" | "plus" | "with"
-r-sub-op : "-" | "minus" | "without"
-r-mul-op : "*" | "times" | "of"
-r-div-op : "/" | "over"
+@r-add-op : "+" | "plus" | "with"
+@r-sub-op : "-" | "minus" | "without"
+@r-mul-op : "*" | "times" | "of"
+@r-div-op : "/" | "over"
+
+;; Compoundable Operator
+@r-compoundable-op : r-add-op | r-sub-op | r-mul-op | r-div-op
 
 ;; Function Definition
 r-func-def : r-func-name "takes" r-parameter (("and" | "," | "&" | ("," "and") | "n") r-parameter)*
