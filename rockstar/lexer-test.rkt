@@ -141,6 +141,18 @@
  (lex "is mysterious")
  (list (token 'BE-POETIC-CONSTANT "mysterious")))
 
+;; Poetic string literal
+
+(check-equal?
+ (lex "says Hello San Francisco!\n")
+ (list (token 'SAY-SOMETHING "Hello San Francisco!")
+       (token 'NEWLINE "\n")))
+
+(check-equal?
+ (lex "says Hello back\n")
+ (list (token 'SAY-SOMETHING "Hello back")
+       (token 'NEWLINE "\n")))
+
 ;; Poetic number literal
 
 (check-equal?

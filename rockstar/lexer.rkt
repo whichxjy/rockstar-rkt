@@ -306,12 +306,15 @@
                           (map string-titlecase
                                (string-split lexeme)) "-"))]
                  ;; Poetic constant literal
-                 [(:- (:seq poetic-copula #\space (:or mysterious-type
+                 [(:seq poetic-copula #\space (:or mysterious-type
                                                    null-type
                                                    boolean-type))
-                      (:seq any-string "\n"))
                   (token 'BE-POETIC-CONSTANT
                          (second (string-split lexeme)))]
+                 ;; Poetic string literal
+                 [(:seq "says" (from/stop-before #\space "\n"))
+                  (token 'SAY-SOMETHING
+                         (substring lexeme 5))]
                  ;; Poetic number literal
                  [(:- (:seq poetic-copula #\space poetic-number)
                       (:seq any-string "\n"))
