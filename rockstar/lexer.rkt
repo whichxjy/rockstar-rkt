@@ -111,6 +111,12 @@
 (define-lex-abbrev cond-reserved-terms
   (:or "If" "Else"))
 
+;; Loop reserved terms
+(define-lex-abbrev loop-reserved-terms
+  (:or "While" "Until"
+       "break" "Break it down"
+       "continue" "Take it to the top"))
+
 ;; Function reserved terms
 (define-lex-abbrev function-reserved-terms
   (:or "takes"
@@ -135,6 +141,7 @@
        comparison-reserved-terms
        logical-reserved-terms
        cond-reserved-terms
+       loop-reserved-terms
        function-reserved-terms
        list-separator))
 
