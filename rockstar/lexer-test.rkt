@@ -7,16 +7,6 @@
 (define (lex str)
   (apply-port-proc rockstar-lexer str))
 
-(check-equal? (lex #<<HH
-If true
-Let my phone be 123
-
-Else
-Put 456 into your apple
-HH
-       )
-             empty)
-
 ;; Empty
 
 (check-equal? (lex "") empty)
@@ -87,52 +77,88 @@ HH
        (token 'WHITESPACE " " #:skip? #t)
        (token 'NUMBER 10)))
 
- ;; Common variable
+;; Common variable
 
- (check-equal?
-  (lex "My phone")
-  (list (token 'COMMON-VAR "my-phone")))
+(check-equal?
+ (lex "My phone")
+ (list (token 'COMMON-VAR "my-phone")))
 
- (check-equal?
-  (lex "An apple")
-  (list (token 'COMMON-VAR "an-apple")))
+(check-equal?
+ (lex "An apple")
+ (list (token 'COMMON-VAR "an-apple")))
 
- ;; Proper variable
+;; Proper variable
 
- (check-equal?
-  (lex "Customer ID")
-  (list (token 'PROPER-VAR "Customer-Id")))
+(check-equal?
+ (lex "Customer ID")
+ (list (token 'PROPER-VAR "Customer-Id")))
 
- ;; Pronoun
+;; Pronoun
 
- (check-equal?
-  (lex "It")
-  (list (token 'PRONOUN "it")))
+(check-equal?
+ (lex "It")
+ (list (token 'PRONOUN "it")))
 
- ;; Mysterious
+;; Mysterious
 
- (check-equal?
-  (lex "mysterious")
-  (list (token 'MYSTERIOUS "mysterious")))
+(check-equal?
+ (lex "mysterious")
+ (list (token 'MYSTERIOUS "mysterious")))
 
- ;; Null
+;; Null
 
- (check-equal?
-  (lex "nothing")
-  (list (token 'NULL "nothing")))
+(check-equal?
+ (lex "nothing")
+ (list (token 'NULL "nothing")))
 
- ;; Boolean
+;; Boolean
 
- (check-equal?
-  (lex "true")
-  (list (token 'BOOLEAN "true")))
+(check-equal?
+ (lex "true")
+ (list (token 'BOOLEAN "true")))
 
- ;; Number
+;; Number
 
- (check-equal?
-  (lex "123")
-  (list (token 'NUMBER 123)))
+(check-equal?
+ (lex "123")
+ (list (token 'NUMBER 123)))
 
- (check-equal?
-  (lex "1.23")
-  (list (token 'NUMBER 1.23)))
+(check-equal?
+ (lex "1.23")
+ (list (token 'NUMBER 1.23)))
+
+;; Poetic constant literal
+
+(check-equal?
+ (lex "is true")
+ (list (token 'BE-POETIC-CONSTANT "true")))
+
+(check-equal?
+ (lex "is nobody")
+ (list (token 'BE-POETIC-CONSTANT "nobody")))
+
+(check-equal?
+ (lex "is mysterious")
+ (list (token 'BE-POETIC-CONSTANT "mysterious")))
+
+;; Poetic number literal
+
+(check-equal?
+ (lex "was a lovestruck ladykiller")
+ (list (token 'BE-POETIC-NUMBER 100)))
+
+(check-equal?
+ (lex "was a dancer")
+ (list (token 'BE-POETIC-NUMBER 16)))
+
+(check-equal?
+ (lex "is on the loose")
+ (list (token 'BE-POETIC-NUMBER 235)))
+
+(check-equal?
+ (lex "were ice. A life unfulfilled; wakin' everybody up, taking booze and pills")
+ (list (token 'BE-POETIC-NUMBER 3.1415926535)))
+
+(check-equal?
+ (lex "was without")
+ (list (token 'BE-POETIC-NUMBER 7)))
