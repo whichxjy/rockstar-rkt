@@ -162,31 +162,31 @@
 
 ;; Poetic number
 (define-lex-abbrev poetic-number
-  (:seq whole-number-part (:? (:seq "." fractional-part))))
+  (:seq whole-number-part (:? (:seq "." frac-number-part))))
 
 ;; Whole number part
 (define-lex-abbrev whole-number-part
-  (:seq (:* poetic-digit-separator)
+  (:seq (:* whole-number-digit-separator)
         (:+ (:seq poetic-digit
-                  (:* poetic-digit-separator)))))
+                  (:* whole-number-digit-separator)))))
 
-;; Fractional part
-(define-lex-abbrev fractional-part
-  (:seq (:* poetic-decimal-digit-separator)
+;; Fractional number part
+(define-lex-abbrev frac-number-part
+  (:seq (:* frac-number-digit-separator)
         (:* (:seq poetic-digit
-                  (:* poetic-decimal-digit-separator)))))
+                  (:* frac-number-digit-separator)))))
 
 ;; Poetic digit
 (define-lex-abbrev poetic-digit
   (:+ alphabetic))
 
-;; Poetic digit separator
-(define-lex-abbrev poetic-digit-separator
-  (char-complement (:or alphabetic ".")))
+;; Whole number digit separator
+(define-lex-abbrev whole-number-digit-separator
+  (char-complement (:or alphabetic "." "\n")))
 
-;; Poetic decimal digit separator
-(define-lex-abbrev poetic-decimal-digit-separator
-  (char-complement alphabetic))
+;; Fractional number digit separator
+(define-lex-abbrev frac-number-digit-separator
+  (char-complement (:or alphabetic "\n")))
 
 ;; Whole number part list -> number
 (define (whole-num-list->number num-list)
@@ -316,8 +316,7 @@
                   (token 'SAY-SOMETHING
                          (substring lexeme 5))]
                  ;; Poetic number literal
-                 [(:- (:seq poetic-copula #\space poetic-number)
-                      (:seq any-string "\n"))
+                 [(:seq poetic-copula #\space (from/stop-before poetic-number "\n"))
                   (token 'BE-POETIC-NUMBER
                          (cond
                            [(string-contains? lexeme ".")

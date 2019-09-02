@@ -17,17 +17,21 @@ r-statement : r-operation | r-expr
 @r-constant : r-mysterious | r-null | r-boolean
 
 ;; Operation
-r-operation : r-crement | r-assignment
+r-operation : r-assignment | r-crement
 
 ;; Assignment
 r-assignment : r-put | r-let
+             | s-poetic-constant | s-poetic-string | s-poetic-number
 ;; Put
 r-put : ("Put" | "put") r-expr "into" r-var
 ;; Let
 r-let : ("Let" | "let") r-var "be" [r-compoundable-op] r-expr
-;; Copula
-r-copula : "is" | "are" | "was" | "were"
-
+;; Set poetic constant literal
+s-poetic-constant : r-var BE-POETIC-CONSTANT
+;; Set poetic string literal
+s-poetic-string : r-var SAY-SOMETHING
+;; Set poetic number literal
+s-poetic-number : r-var BE-POETIC-NUMBER
 
 ;; Increment & Decrement
 r-crement : r-increment | r-decrement
