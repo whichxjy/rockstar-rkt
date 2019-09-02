@@ -5,8 +5,9 @@ r-program : [r-statement] (/NEWLINE [r-statement])*
 
 ;; Statement
 r-statement : r-operation | r-expr
-            | r-func-def | r-func-return | r-func-call
+            | r-input | r-output
             | r-if | r-while | r-until | r-break | r-continue
+            | r-func-def | r-func-return | r-func-call
 
 ;; Value
 @r-value : r-func-call | r-var | r-literal | r-pronoun
@@ -73,6 +74,11 @@ r-not-expr : r-not-op* r-value-list
 ;; Logical Not Operator
 @r-not-op : "not"
 
+;; Input
+r-input : "Listen" | ("Listen to" r-var)
+;; Output
+r-output : ("Say" | "Shout" | "Whisper" | "Scream") r-expr
+
 ;; Block
 r-block : r-statement (NEWLINE r-statement)* NEWLINE
 
@@ -108,7 +114,7 @@ r-expr-list-sep : "," | "&" | ", and" | "n"
 r-expr-list : r-expr (r-expr-list-sep r-expr)*
 
 ;; Value List Separator
-@r-value-list-sep : r-expr-list-sep
+r-value-list-sep : r-expr-list-sep
 ;; Value List
 r-value-list : r-value (r-value-list-sep r-value)*
 

@@ -107,6 +107,11 @@
 (define-lex-abbrev logical-reserved-terms
   (:or "and" "or" "nor" "not"))
 
+;; Input & Output
+(define-lex-abbrev stream-reserved-terms
+  (:or "Listen" "Listen to"
+       "Say" "Shout" "Whisper" "Scream"))
+
 ;; Conditional reserved terms
 (define-lex-abbrev cond-reserved-terms
   (:or "If" "Else"))
@@ -140,6 +145,7 @@
        arithmetic-reserved-terms
        comparison-reserved-terms
        logical-reserved-terms
+       stream-reserved-terms
        cond-reserved-terms
        loop-reserved-terms
        function-reserved-terms
