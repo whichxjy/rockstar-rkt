@@ -19,19 +19,22 @@ r-statement : r-operation | r-expr
 ;; Operation
 r-operation : r-crement | r-assignment
 
-;; Increment & Decrement
-r-crement : r-increment | r-decrement
-;; Increment
-r-increment : "Build" r-var "up" ("," "up")*
-;; Decrement
-r-decrement : "Knock" r-var "down" ("," "down")*
-
 ;; Assignment
 r-assignment : r-put | r-let
 ;; Put
 r-put : ("Put" | "put") r-expr "into" r-var
 ;; Let
 r-let : ("Let" | "let") r-var "be" [r-compoundable-op] r-expr
+;; Copula
+r-copula : "is" | "are" | "was" | "were"
+
+
+;; Increment & Decrement
+r-crement : r-increment | r-decrement
+;; Increment
+r-increment : "Build" r-var "up" ("," "up")*
+;; Decrement
+r-decrement : "Knock" r-var "down" ("," "down")*
 
 ;; Expression
 r-expr : r-and-expr | r-or-expr | r-nor-expr
