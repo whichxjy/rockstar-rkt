@@ -1,16 +1,14 @@
 #lang brag
 
 ;; Rockstar program
-r-program : [(r-line | r-func-def)] (/NEWLINE [(r-line | r-func-def)])*
-
-;; Line
-r-line : r-statement | r-func-return
+r-program : [r-statement] (/NEWLINE [r-statement])*
 
 ;; Statement
-r-statement : r-operation
+r-statement : r-operation | r-func-def | r-func-return | r-func-call
+            | r-if
 
 ;; Value
-@r-value : r-var | r-literal | r-pronoun
+@r-value : r-func-call | r-var | r-literal | r-pronoun
 ;; Literal
 @r-literal : r-constant | r-number | r-string
 ;; Constant
@@ -74,22 +72,26 @@ r-not-expr : r-not-op* r-value-list
 ;; Logical Not Operator
 @r-not-op : "not"
 
+;; Block
+r-block : r-statement (NEWLINE r-statement)* NEWLINE
+
+;; Conditional
+r-if : "If" r-expr
+       [r-if-consequent]
+       [r-else]
+r-if-consequent : r-statement
+                | (NEWLINE r-block)
+r-else : ("Else" r-statement)
+       | (NEWLINE "Else" r-statement)
+       | (NEWLINE "Else" NEWLINE r-block)
+
 ;; Function Definition
-r-func-def : r-func-name "takes" r-parameter (r-var-list-sep r-parameter)*
-             NEWLINE
-             (r-line NEWLINE)*
-             r-func-return
-             NEWLINE
+r-func-def : r-var "takes" r-var-list NEWLINE
+             r-block
 ;; Function Return Statement
 r-func-return : "Give back" r-expr
 ;; Function Call
-r-func-call : r-func-name "taking" r-argument (r-expr-list-sep r-argument)*
-;; Function Name
-r-func-name : r-var
-;; Function Parameter
-r-parameter : r-var
-;; Function Argument
-r-argument : r-expr
+r-func-call : r-var "taking" r-expr-list
 
 ;; Expression List Separator
 @r-expr-list-sep : "," | "&" | ", and" | "n"

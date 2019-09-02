@@ -3,7 +3,8 @@
 (require "parser.rkt" "tokenizer.rkt" brag/support)
 
 (define str #<<HERE
-(Let my phone be 123
+(-------------------------------------------------
+Let my phone be 123
 Put 456 into your apple
 Build my world up
 Knock the walls down
@@ -18,7 +19,16 @@ Let X be "foo" with "bar", and "baz"
 Let X be Tommy is nobody
 Let X be my sister is higher than me
 Let X be false and 1 over 0
-Let X be not not true)
+Let X be 1 + not 2
+ABC takes X
+Give back not not 123
+If true Let abc be 123
+-------------------------------------------------)
+If true Let my phone be 123
+Else
+Put 456 into your apple
+Put 123 into your apple
+
 HERE
 )
 

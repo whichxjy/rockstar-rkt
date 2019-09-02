@@ -107,13 +107,17 @@
 (define-lex-abbrev logical-reserved-terms
   (:or "and" "or" "nor" "not"))
 
-;; Function Reserved terms
+;; Conditional reserved terms
+(define-lex-abbrev cond-reserved-terms
+  (:or "If" "Else"))
+
+;; Function reserved terms
 (define-lex-abbrev function-reserved-terms
   (:or "takes"
        "taking"
        "Give back"))
 
-;; List Separator
+;; List separator
 (define-lex-abbrev list-separator
   (:or ","
        "&"
@@ -130,6 +134,7 @@
        arithmetic-reserved-terms
        comparison-reserved-terms
        logical-reserved-terms
+       cond-reserved-terms
        function-reserved-terms
        list-separator))
 

@@ -7,6 +7,16 @@
 (define (lex str)
   (apply-port-proc rockstar-lexer str))
 
+(check-equal? (lex #<<HH
+If true
+Let my phone be 123
+
+Else
+Put 456 into your apple
+HH
+       )
+             empty)
+
 ;; Empty
 
 (check-equal? (lex "") empty)
