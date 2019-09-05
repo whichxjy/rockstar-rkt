@@ -201,19 +201,22 @@
                  ;; Simple variable
                  [simple-var
                   (token 'SIMPLE-VAR
-                         (string-downcase lexeme))]
+                         (string->symbol
+                          (string-downcase lexeme)))]
                  ;; Common variable
                  [common-var
                   (token 'COMMON-VAR
-                         (string-join
-                          (map string-downcase
-                               (string-split lexeme)) "-"))]
+                         (string->symbol
+                          (string-join
+                           (map string-downcase
+                                (string-split lexeme)) "-")))]
                  ;; Proper variable
                  [proper-var
                   (token 'PROPER-VAR
-                         (string-join
-                          (map string-titlecase
-                               (string-split lexeme)) "-"))])])
+                         (string->symbol
+                          (string-join
+                           (map string-titlecase
+                                (string-split lexeme)) "-")))])])
        (lex ip))]))
 
 (provide rockstar-lexer)
