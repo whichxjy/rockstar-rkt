@@ -15,18 +15,39 @@
            syntax/stx)
   ;; initialize all variables
   (define (init-all-variables target-stx global-var-ids)
-    ;; distinguish r-func-def statements from other types of statements
-    (define-values (func-def-stxs not-func-def-stxs)
-      (partition (lambda (stx)
-                   (and (stx-pair? stx)
-                        (eq? (syntax->datum (stx-car stx)) 'r-func-def)))
-                 (stx->list target-stx)))
+    ;; distinguish non-func-def statements from other func-def statements
+    (define not-func-def-stxs
+      (filter (lambda (stx)
+                (and (syntax-property stx 'r-statement)
+                     (stx-pair? stx)
+                     (not (eq? (syntax->datum (stx-car stx)) 'r-func-def))))
+              (stx->list target-stx)))
+    ;; find all ids of called functions from not-func-def-stxs
+    (define called-func-ids
+      (remove-duplicates
+       (for/list ([not-func-def-stx not-func-def-stxs]
+                  #:when (and (stx-pair? not-func-def-stx)
+                              (stx-pair? (stx-cdr not-func-def-stx))
+                              (eq? (syntax->datum (stx-car not-func-def-stx))
+                                   'r-func-call)))
+         (stx-car (stx-cdr not-func-def-stx)))
+       #:key syntax->datum))
     ;; find all ids of non-global variables from not-func-def-stxs
     (define non-global-var-ids
       (remove-duplicates
        (for*/list ([not-func-def-stx not-func-def-stxs]
                    [stx (in-list (stx-flatten not-func-def-stx))]
-                   #:when (syntax-property stx 'r-var))
+                   #:when (and (syntax-property stx 'r-var)
+                               ;; not global-var-id
+                               (not (findf (lambda (global-var-id)
+                                             (eq? (syntax->datum global-var-id)
+                                                  (syntax->datum stx)))
+                                           global-var-ids))
+                               ;; not called-func-id
+                               (not (findf (lambda (called-func-id)
+                                             (eq? (syntax->datum called-func-id)
+                                                  (syntax->datum stx)))
+                                           called-func-ids))))
          stx)
        #:key syntax->datum))
     ;; create init statements
@@ -48,9 +69,10 @@
     (define target-stx-with-init-stmts
       (append left-half init-stmts right-half))
     ;; process r-func-def in target-stx and return result
-    (for/list ([stx (stx->list target-stx)])
+    (for/list ([stx (stx->list target-stx-with-init-stmts)])
       (cond
-        [(syntax-property stx 'r-func-def)
+        [(and (stx-pair? stx)
+              (eq? (syntax->datum (stx-car stx)) 'r-func-def))
          (init-all-variables stx
                              (append global-var-ids
                                      non-global-var-ids))]
