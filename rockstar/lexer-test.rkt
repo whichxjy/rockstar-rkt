@@ -59,17 +59,17 @@
 
 (check-equal?
  (lex "X")
- (list (token 'SIMPLE-VAR "x")))
+ (list (token 'SIMPLE-VAR 'x)))
 
 (check-equal?
  (lex "phone")
- (list (token 'SIMPLE-VAR "phone")))
+ (list (token 'SIMPLE-VAR 'phone)))
 
 (check-equal?
  (lex "Let X be with 10")
  (list (token 'Let "Let")
        (token 'WHITESPACE " " #:skip? #t)
-       (token 'SIMPLE-VAR "x")
+       (token 'SIMPLE-VAR 'x)
        (token 'WHITESPACE " " #:skip? #t)
        (token 'be "be")
        (token 'WHITESPACE " " #:skip? #t)
@@ -81,17 +81,17 @@
 
 (check-equal?
  (lex "My phone")
- (list (token 'COMMON-VAR "my-phone")))
+ (list (token 'COMMON-VAR 'my-phone)))
 
 (check-equal?
  (lex "An apple")
- (list (token 'COMMON-VAR "an-apple")))
+ (list (token 'COMMON-VAR 'an-apple)))
 
 ;; Proper variable
 
 (check-equal?
  (lex "Customer ID")
- (list (token 'PROPER-VAR "Customer-Id")))
+ (list (token 'PROPER-VAR 'Customer-Id)))
 
 ;; Pronoun
 
