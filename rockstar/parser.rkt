@@ -4,10 +4,10 @@
 r-program : [r-statement] (/NEWLINE [r-statement])*
 
 ;; Statement
-r-statement : r-operation | r-expr
-            | r-input | r-output
-            | r-if | r-while | r-until | r-break | r-continue
-            | r-func-def | r-func-return | r-func-call
+@r-statement : r-operation | r-expr
+             | r-input | r-output
+             | r-if | r-while | r-until | r-break | r-continue
+             | r-func-def | r-func-return | r-func-call
 
 ;; Value
 @r-value : r-func-call | r-var | r-literal | r-pronoun
@@ -80,7 +80,7 @@ r-input : "Listen" | ("Listen to" r-var)
 r-output : ("Say" | "Shout" | "Whisper" | "Scream") r-expr
 
 ;; Block
-r-block : r-statement (NEWLINE r-statement)* NEWLINE
+@r-block : r-statement (/NEWLINE r-statement)* /NEWLINE
 
 ;; Conditional
 r-if : "If" r-expr

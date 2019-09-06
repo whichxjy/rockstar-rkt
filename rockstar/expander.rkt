@@ -3,11 +3,11 @@
 (define-macro (r-module-begin (r-program STATEMENT ...))
   (with-pattern
       ([(r-program REAL-STATEMENT ...)
-        (init-all-variables #:target-stx #'(r-program STATEMENT ...)
-                            #:global-var-ids '())])
+        (init-all-variables #'(r-program STATEMENT ...) '())])
     #'(#%module-begin
-       REAL-STATEMENT ...
+       '(REAL-STATEMENT ...)
        (void))))
+(provide (rename-out [r-module-begin #%module-begin]))
 
 ;; Phase 1
 (begin-for-syntax
@@ -18,14 +18,16 @@
     ;; distinguish r-func-def statements from other types of statements
     (define-values (func-def-stxs not-func-def-stxs)
       (partition (lambda (stx)
-                   (syntax-property stx 'r-func-def))
+                   (and (stx-pair? stx)
+                        (eq? (syntax->datum (stx-car stx)) 'r-func-def)))
                  (stx->list target-stx)))
     ;; find all ids of non-global variables from not-func-def-stxs
     (define non-global-var-ids
       (remove-duplicates
-       (filter (lambda (stx)
-                 (syntax-property stx 'r-var))
-               (stx-flatten not-func-def-stxs))
+       (for*/list ([not-func-def-stx not-func-def-stxs]
+                   [stx (in-list (stx-flatten not-func-def-stx))]
+                   #:when (syntax-property stx 'r-var))
+         stx)
        #:key syntax->datum))
     ;; create init statements
     (define init-stmts
@@ -51,5 +53,5 @@
         [(syntax-property stx 'r-func-def)
          (init-all-variables stx
                              (append global-var-ids
-                                         non-global-var-ids))]
+                                     non-global-var-ids))]
         [else stx]))))
