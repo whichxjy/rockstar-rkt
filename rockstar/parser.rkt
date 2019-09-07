@@ -10,7 +10,7 @@ r-program : [r-statement] (/NEWLINE [r-statement])*
              | r-func-def | r-func-return | r-func-call
 
 ;; Value
-@r-value : r-func-call | r-var | r-literal | r-pronoun
+@r-value : r-func-call | r-var | r-literal | r-pronoun | r-expr
 ;; Literal
 @r-literal : r-constant | r-number | r-string
 ;; Constant
@@ -70,7 +70,7 @@ r-div-expr : [(r-mul-expr | r-div-expr) r-div-op] r-not-expr
 @r-compoundable-op : r-add-op | r-sub-op | r-mul-op | r-div-op
 
 ;; Logical Not Expression
-r-not-expr : r-not-op* r-value-list
+r-not-expr : [r-not-op] r-value-list
 ;; Logical Not Operator
 @r-not-op : "not"
 
@@ -111,17 +111,17 @@ r-func-call : r-var "taking" r-expr-list
 ;; Expression List Separator
 r-expr-list-sep : "," | "&" | ", and" | "n"
 ;; Expression List
-r-expr-list : r-expr (r-expr-list-sep r-expr)*
+r-expr-list : r-expr (/r-expr-list-sep r-expr)*
 
 ;; Value List Separator
 r-value-list-sep : r-expr-list-sep
 ;; Value List
-r-value-list : r-value (r-value-list-sep r-value)*
+r-value-list : r-value (/r-value-list-sep r-value)*
 
 ;; Variable List Separator
-@r-var-list-sep : r-expr-list-sep | "and"
+r-var-list-sep : r-expr-list-sep | "and"
 ;; Variable List
-r-var-list : r-var (r-var-list-sep r-var)*
+r-var-list : r-var (/r-var-list-sep r-var)*
 
 ;; Variable
 @r-var : SIMPLE-VAR | COMMON-VAR | PROPER-VAR
