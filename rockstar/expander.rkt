@@ -1,13 +1,15 @@
 #lang br/quicklang
 
+(provide (rename-out [r-module-begin #%module-begin])
+         (matching-identifiers-out #rx"^r-" (all-defined-out)))
+
 (define-macro (r-module-begin (r-program STATEMENT ...))
   (with-pattern
       ([(r-program REAL-STATEMENT ...)
         (init-all-variables #'(r-program STATEMENT ...) '())])
     #'(#%module-begin
-       '(REAL-STATEMENT ...)
+       REAL-STATEMENT ...
        (void))))
-(provide (rename-out [r-module-begin #%module-begin]))
 
 ;; Phase 1
 (begin-for-syntax
@@ -15,7 +17,7 @@
            syntax/stx)
   ;; initialize all variables
   (define (init-all-variables target-stx global-var-ids)
-    ;; distinguish non-func-def statements from other func-def statements
+    ;; distinguish non-func-def statements from func-def statements
     (define not-func-def-stxs
       (filter (lambda (stx)
                 (and (syntax-property stx 'r-statement)
@@ -77,3 +79,45 @@
                              (append global-var-ids
                                      non-global-var-ids))]
         [else stx]))))
+
+;; =========== [Boolean Expression: and & or & nor] ===========
+
+(define-macro-cases r-and-expr
+  [(_ VAL) #'VAL]
+  [(_ LEFT "and" RIGHT) #'(and LEFT RIGHT)])
+
+;; =========== [Comparison Expression] ===========
+
+(define-macro-cases r-cmp-expr
+  [(_ VAL) #'VAL])
+
+;; =========== [Arithmetic Expression] ===========
+
+(define-macro-cases r-add-expr
+  [(_ VAL) #'VAL]
+  [(_ LEFT "+" RIGHT) #'(+ LEFT RIGHT)]
+  [(_ LEFT "plus" RIGHT) #'(+ LEFT RIGHT)]
+  [(_ LEFT "with" RIGHT) #'(+ LEFT RIGHT)])
+
+(define-macro-cases r-mul-expr
+  [(_ VAL) #'VAL]
+  [(_ LEFT "*" RIGHT) #'(* LEFT RIGHT)]
+  [(_ LEFT "times" RIGHT) #'(* LEFT RIGHT)]
+  [(_ LEFT "of" RIGHT) #'(* LEFT RIGHT)])
+
+;; Logical Not Expression
+(define-macro-cases r-not-expr
+  [(_ VAL) #'VAL]
+  [(_ "not" VAL) #'(not VAL)])
+
+;; =========== [Input & Output] ===========
+;; Output
+(define-macro (r-output VAL)
+  #'(display VAL))
+
+;; =========== [List] ===========
+
+;; Value List
+(define-macro-cases r-value-list
+  [(_ VAL) #'VAL]
+  [(_ VAL ...) #'(list VAL ...)])
