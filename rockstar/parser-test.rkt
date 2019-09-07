@@ -49,7 +49,8 @@ Say Tommy
 My heart is true
 Tommy is nobody
 --------------------------------------------------)
-If Tommy is nobody let my phone be 123
+
+Say 123
 
 HERE
 )

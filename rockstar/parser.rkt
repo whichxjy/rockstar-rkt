@@ -17,12 +17,12 @@ r-program : [r-statement] (/NEWLINE [r-statement])*
 @r-constant : r-mysterious | r-null | r-boolean
 
 ;; Operation
-r-operation : r-assignment | r-crement
+@r-operation : r-assignment | r-crement
 
 ;; Assignment
-r-assignment : r-put | r-let
+@r-assignment : r-put | r-let
 ;; Put
-r-put : ("Put" | "put") r-expr "into" r-var
+r-put : /("Put" | "put") r-expr /"into" r-var
 ;; Let
 r-let : ("Let" | "let") r-var "be" [r-compoundable-op] r-expr
 
@@ -37,9 +37,9 @@ r-decrement : "Knock" r-var "down" ("," "down")*
 @r-expr : r-and-expr | r-or-expr | r-nor-expr
 
 ;; Boolean Expression: and & or & nor
-r-and-expr : [(r-and-expr | r-or-expr | r-nor-expr) r-and-op] r-cmp-expr
-r-or-expr : [(r-and-expr | r-or-expr | r-nor-expr) r-or-op] r-cmp-expr
-r-nor-expr : [(r-and-expr | r-or-expr | r-nor-expr) r-nor-op] r-cmp-expr
+r-and-expr : [(r-and-expr | r-or-expr | r-nor-expr) /r-and-op] r-cmp-expr
+r-or-expr : [(r-and-expr | r-or-expr | r-nor-expr) /r-or-op] r-cmp-expr
+r-nor-expr : [(r-and-expr | r-or-expr | r-nor-expr) /r-nor-op] r-cmp-expr
 ;; Logical Operator: and & or & nor
 @r-and-op: "and"
 @r-or-op: "or"
@@ -57,15 +57,15 @@ r-cmp-expr : [r-cmp-expr r-cmp-op] r-arithmetic-expr
 
 ;; Arithmetic Expression
 @r-arithmetic-expr : r-add-expr | r-sub-expr
-r-add-expr : [(r-add-expr | r-sub-expr) r-add-op] (r-mul-expr | r-div-expr)
-r-sub-expr : [(r-add-expr | r-sub-expr) r-sub-op] (r-mul-expr | r-div-expr)
-r-mul-expr : [(r-mul-expr | r-div-expr) r-mul-op] r-not-expr
-r-div-expr : [(r-mul-expr | r-div-expr) r-div-op] r-not-expr
+r-add-expr : [(r-add-expr | r-sub-expr) /r-add-op] (r-mul-expr | r-div-expr)
+r-sub-expr : [(r-add-expr | r-sub-expr) /r-sub-op] (r-mul-expr | r-div-expr)
+r-mul-expr : [(r-mul-expr | r-div-expr) /r-mul-op] r-not-expr
+r-div-expr : [(r-mul-expr | r-div-expr) /r-div-op] r-not-expr
 ;; Arithmetic Operator
-@r-add-op : "+" | "plus" | "with"
-@r-sub-op : "-" | "minus" | "without"
-@r-mul-op : "*" | "times" | "of"
-@r-div-op : "/" | "over"
+r-add-op : "+" | "plus" | "with"
+r-sub-op : "-" | "minus" | "without"
+r-mul-op : "*" | "times" | "of"
+r-div-op : "/" | "over"
 ;; Compoundable Operator
 @r-compoundable-op : r-add-op | r-sub-op | r-mul-op | r-div-op
 

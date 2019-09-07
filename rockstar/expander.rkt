@@ -55,9 +55,7 @@
     ;; create init statements
     (define init-stmts
       (map (lambda (var-stx)
-             (datum->syntax #f
-                            (format-datum '(r-init-var ~a)
-                                          (syntax->datum var-stx))))
+             #`(r-init-var #,var-stx))
            non-global-var-ids))
     ;; find the index of first statement in target-stx
     (define first-stmt-index
@@ -80,11 +78,33 @@
                                      non-global-var-ids))]
         [else stx]))))
 
-;; =========== [Boolean Expression: and & or & nor] ===========
+;; =========== [Initialize Variable] ===========
+
+(define-macro (r-init-var ID)
+  #'(define ID '__mysterious__))
+
+;; =========== [Assignment] ===========
+
+(define-macro (r-put VAL ID)
+  #'(set! ID VAL))
+
+;; =========== [Boolean Expression] ===========
 
 (define-macro-cases r-and-expr
   [(_ VAL) #'VAL]
-  [(_ LEFT "and" RIGHT) #'(and LEFT RIGHT)])
+  [(_ LEFT RIGHT) #'(and LEFT RIGHT)])
+
+(define-macro-cases r-or-expr
+  [(_ VAL) #'VAL]
+  [(_ LEFT RIGHT) #'(or LEFT RIGHT)])
+
+(define-macro-cases r-nor-expr
+  [(_ VAL) #'VAL]
+  [(_ LEFT RIGHT) #'(nor LEFT RIGHT)])
+
+(define-macro-cases r-not-expr
+  [(_ VAL) #'VAL]
+  [(_ _ VAL) #'(not VAL)])
 
 ;; =========== [Comparison Expression] ===========
 
@@ -95,25 +115,36 @@
 
 (define-macro-cases r-add-expr
   [(_ VAL) #'VAL]
-  [(_ LEFT "+" RIGHT) #'(+ LEFT RIGHT)]
-  [(_ LEFT "plus" RIGHT) #'(+ LEFT RIGHT)]
-  [(_ LEFT "with" RIGHT) #'(+ LEFT RIGHT)])
+  [(_ LEFT RIGHT) #'(+ LEFT RIGHT)])
+
+(define-macro-cases r-sub-expr
+  [(_ VAL) #'VAL]
+  [(_ LEFT RIGHT) #'(- LEFT RIGHT)])
 
 (define-macro-cases r-mul-expr
   [(_ VAL) #'VAL]
-  [(_ LEFT "*" RIGHT) #'(* LEFT RIGHT)]
-  [(_ LEFT "times" RIGHT) #'(* LEFT RIGHT)]
-  [(_ LEFT "of" RIGHT) #'(* LEFT RIGHT)])
+  [(_ LEFT RIGHT) #'(* LEFT RIGHT)])
 
-;; Logical Not Expression
-(define-macro-cases r-not-expr
+(define-macro-cases r-div-expr
   [(_ VAL) #'VAL]
-  [(_ "not" VAL) #'(not VAL)])
+  [(_ LEFT RIGHT) #'(/ LEFT RIGHT)])
 
 ;; =========== [Input & Output] ===========
+
+;; Input
+(define-macro-cases r-input
+  [(_ "Listen")
+   #'(let* ([str (read-line)]
+            [num (string->number (string-trim str))])
+       (or num str))]
+  [(_ "Listen to" ID)
+   #'(set! ID (let* ([str (read-line)]
+                     [num (string->number (string-trim str))])
+                (or num str)))])
+
 ;; Output
 (define-macro (r-output VAL)
-  #'(display VAL))
+  #'(displayln VAL))
 
 ;; =========== [List] ===========
 
