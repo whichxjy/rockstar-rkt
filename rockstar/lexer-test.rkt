@@ -59,17 +59,17 @@
 
 (check-equal?
  (lex "X")
- (list (token 'SIMPLE-VAR "x")))
+ (list (token 'SIMPLE-VAR 'x)))
 
 (check-equal?
  (lex "phone")
- (list (token 'SIMPLE-VAR "phone")))
+ (list (token 'SIMPLE-VAR 'phone)))
 
 (check-equal?
  (lex "Let X be with 10")
  (list (token 'Let "Let")
        (token 'WHITESPACE " " #:skip? #t)
-       (token 'SIMPLE-VAR "x")
+       (token 'SIMPLE-VAR 'x)
        (token 'WHITESPACE " " #:skip? #t)
        (token 'be "be")
        (token 'WHITESPACE " " #:skip? #t)
@@ -81,17 +81,17 @@
 
 (check-equal?
  (lex "My phone")
- (list (token 'COMMON-VAR "my-phone")))
+ (list (token 'COMMON-VAR 'my-phone)))
 
 (check-equal?
  (lex "An apple")
- (list (token 'COMMON-VAR "an-apple")))
+ (list (token 'COMMON-VAR 'an-apple)))
 
 ;; Proper variable
 
 (check-equal?
  (lex "Customer ID")
- (list (token 'PROPER-VAR "Customer-Id")))
+ (list (token 'PROPER-VAR 'Customer-Id)))
 
 ;; Pronoun
 
@@ -115,7 +115,11 @@
 
 (check-equal?
  (lex "true")
- (list (token 'BOOLEAN "true")))
+ (list (token 'TRUE "true")))
+
+(check-equal?
+ (lex "false")
+ (list (token 'FALSE "false")))
 
 ;; Number
 
@@ -126,51 +130,3 @@
 (check-equal?
  (lex "1.23")
  (list (token 'NUMBER 1.23)))
-
-;; Poetic constant literal
-
-(check-equal?
- (lex "is true")
- (list (token 'BE-POETIC-CONSTANT "true")))
-
-(check-equal?
- (lex "is nobody")
- (list (token 'BE-POETIC-CONSTANT "nobody")))
-
-(check-equal?
- (lex "is mysterious")
- (list (token 'BE-POETIC-CONSTANT "mysterious")))
-
-;; Poetic string literal
-
-(check-equal?
- (lex "says Hello San Francisco!\n")
- (list (token 'SAY-SOMETHING "Hello San Francisco!")
-       (token 'NEWLINE "\n")))
-
-(check-equal?
- (lex "says Hello back\n")
- (list (token 'SAY-SOMETHING "Hello back")
-       (token 'NEWLINE "\n")))
-
-;; Poetic number literal
-
-(check-equal?
- (lex "was a lovestruck ladykiller")
- (list (token 'BE-POETIC-NUMBER 100)))
-
-(check-equal?
- (lex "was a dancer")
- (list (token 'BE-POETIC-NUMBER 16)))
-
-(check-equal?
- (lex "is on the loose")
- (list (token 'BE-POETIC-NUMBER 235)))
-
-(check-equal?
- (lex "were ice. A life unfulfilled; wakin' everybody up, taking booze and pills")
- (list (token 'BE-POETIC-NUMBER 3.1415926535)))
-
-(check-equal?
- (lex "was without")
- (list (token 'BE-POETIC-NUMBER 7)))

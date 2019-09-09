@@ -63,17 +63,21 @@
        "gone"))
 
 ;; Boolean
-(define-lex-abbrev boolean-type
+(define-lex-abbrev true-type
   (:or "true"
-       "false"
-       "maybe"
-       "definitely maybe"
        "right"
        "yes"
-       "ok"
+       "ok"))
+
+(define-lex-abbrev false-type
+  (:or "false"
        "wrong"
        "no"
        "lies"))
+
+(define-lex-abbrev boolean-reserved-terms
+  (:or "maybe"
+       "definitely maybe"))
 
 ;; Poetic Copula
 (define-lex-abbrev poetic-copula
@@ -147,6 +151,7 @@
 ;; Reserved terms
 (define-lex-abbrev reserved-terms
   (:or common-var-prefix
+       boolean-reserved-terms
        poetic-reserved-terms
        assignment-reserved-terms
        increment-reserved-terms
@@ -159,97 +164,6 @@
        loop-reserved-terms
        function-reserved-terms
        list-separator))
-
-;; Poetic number
-(define-lex-abbrev poetic-number
-  (:seq whole-number-part (:? (:seq "." frac-number-part))))
-
-;; Whole number part
-(define-lex-abbrev whole-number-part
-  (:seq (:* whole-number-digit-separator)
-        (:+ (:seq poetic-digit
-                  (:* whole-number-digit-separator)))))
-
-;; Fractional number part
-(define-lex-abbrev frac-number-part
-  (:seq (:* frac-number-digit-separator)
-        (:* (:seq poetic-digit
-                  (:* frac-number-digit-separator)))))
-
-;; Poetic digit
-(define-lex-abbrev poetic-digit
-  (:+ alphabetic))
-
-;; Whole number digit separator
-(define-lex-abbrev whole-number-digit-separator
-  (char-complement (:or alphabetic "." "\n")))
-
-;; Fractional number digit separator
-(define-lex-abbrev frac-number-digit-separator
-  (char-complement (:or alphabetic "\n")))
-
-;; Whole number part list -> number
-(define (whole-num-list->number num-list)
-  (for/fold ([sum 0])
-            ([digit num-list]
-             [power (in-range (sub1 (length num-list)) -1 -1)])
-    (+ sum (* digit (expt 10 power)))))
-
-;; Fractional number part list -> number
-(define (frac-num-list->number num-list)
-  (for/fold ([sum 0])
-            ([digit num-list]
-             [k (in-naturals 1)])
-    (+ sum (* digit (expt 10 (- k))))))
-
-;; Decimal number string -> number
-(define (decimal-str->number str)
-  ;; split the string into a list and drop the copula
-  (define str-list (drop
-                    (string-split
-                    (string-replace str "." " . ")
-                    #px"[^.a-zA-Z]+") 1))
-  ;; find the first period
-  (define first-period-index
-    (index-of str-list "."))
-  ;; split the list into two parts
-  (define-values (whole-number-str-list frac-number-str-list-with-period)
-    (split-at str-list first-period-index))
-  (define frac-number-str-list
-    (remove* '(".") frac-number-str-list-with-period))
-  ;; map string-lists to number-lists
-  (define whole-number-list
-    (map (lambda (str)
-           (modulo (string-length str) 10))
-           whole-number-str-list))
-  (define frac-number-list
-    (map (lambda (str)
-           (modulo (string-length str) 10))
-           frac-number-str-list))
-  ;; calculate the whole number part and fractional number part
-  (define whole-number-part
-    (whole-num-list->number whole-number-list))
-  (define frac-number-part
-    (frac-num-list->number frac-number-list))
-  ;; add the whole number part and fractional number part
-  (exact->inexact (+ whole-number-part frac-number-part)))
-  
-;; Integral number string -> number
-(define (integral-str->number str)
-  ;; split the string into a list and drop the copula
-  (define str-list (drop
-                    (string-split str #px"[^a-zA-Z]+")
-                    1))
-  ;; map string-list to number-list
-  (define integral-number-list
-    (map (lambda (str)
-           (modulo (string-length str) 10))
-           str-list))
-  ;; calculate the integral number
-  (define intergal-number
-    (whole-num-list->number integral-number-list))
-  ;; return result
-  intergal-number)
 
 ;; Create lexer
 (define (rockstar-lexer ip)
@@ -278,9 +192,12 @@
                  ;; Null
                  [null-type
                   (token 'NULL lexeme)]
-                 ;; Boolean
-                 [boolean-type
-                  (token 'BOOLEAN lexeme)]
+                 ;; Ture
+                 [true-type
+                  (token 'TRUE lexeme)]
+                 ;; False
+                 [false-type
+                  (token 'FALSE lexeme)]
                  ;; Number
                  [(:or (:+ numeric)
                        (:seq (:+ numeric) "." (:+ numeric)))
@@ -292,37 +209,22 @@
                  ;; Simple variable
                  [simple-var
                   (token 'SIMPLE-VAR
-                         (string-downcase lexeme))]
+                         (string->symbol
+                          (string-downcase lexeme)))]
                  ;; Common variable
                  [common-var
                   (token 'COMMON-VAR
-                         (string-join
-                          (map string-downcase
-                               (string-split lexeme)) "-"))]
+                         (string->symbol
+                          (string-join
+                           (map string-downcase
+                                (string-split lexeme)) "-")))]
                  ;; Proper variable
                  [proper-var
                   (token 'PROPER-VAR
-                         (string-join
-                          (map string-titlecase
-                               (string-split lexeme)) "-"))]
-                 ;; Poetic constant literal
-                 [(:seq poetic-copula #\space (:or mysterious-type
-                                                   null-type
-                                                   boolean-type))
-                  (token 'BE-POETIC-CONSTANT
-                         (second (string-split lexeme)))]
-                 ;; Poetic string literal
-                 [(:seq "says" (from/stop-before #\space "\n"))
-                  (token 'SAY-SOMETHING
-                         (substring lexeme 5))]
-                 ;; Poetic number literal
-                 [(:seq poetic-copula #\space (from/stop-before poetic-number "\n"))
-                  (token 'BE-POETIC-NUMBER
-                         (cond
-                           [(string-contains? lexeme ".")
-                            (decimal-str->number lexeme)]
-                           [else
-                            (integral-str->number lexeme)]))])])
+                         (string->symbol
+                          (string-join
+                           (map string-titlecase
+                                (string-split lexeme)) "-")))])])
        (lex ip))]))
 
 (provide rockstar-lexer)
