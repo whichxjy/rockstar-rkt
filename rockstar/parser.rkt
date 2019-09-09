@@ -46,42 +46,30 @@ r-nor-expr : [(r-and-expr | r-or-expr | r-nor-expr) /r-nor-op] r-cmp-expr
 @r-nor-op: "nor"
 
 ;; [Comparison Expression]
-@r-cmp-expr : r-is-equal-expr | r-is-not-equal-expr
-            | r-is-greater-expr | r-is-smaller-expr
-            | r-is-great-expr | r-is-small-expr
-            | r-is-not-greater-expr | r-is-not-smaller-expr
-            | r-is-not-great-expr | r-is-not-small-expr
-;; --------------------------------------------------------------------------
-r-is-equal-expr : [r-cmp-expr /r-is-equal-op] r-arithmetic-expr
-r-is-not-equal-expr : [r-cmp-expr /r-is-not-equal-op] r-arithmetic-expr
-;; --------------------------------------------------------------------------
-r-is-greater-expr : [r-cmp-expr /r-is-greater-op] r-arithmetic-expr
-r-is-smaller-expr : [r-cmp-expr /r-is-smaller-op] r-arithmetic-expr
-r-is-great-expr : [r-cmp-expr /r-is-great-op] r-arithmetic-expr
-r-is-small-expr : [r-cmp-expr /r-is-small-op] r-arithmetic-expr
-;; --------------------------------------------------------------------------
-r-is-not-greater-expr : [r-cmp-expr /r-is-not-greater-op] r-arithmetic-expr
-r-is-not-smaller-expr : [r-cmp-expr /r-is-not-smaller-op] r-arithmetic-expr
-r-is-not-great-expr : [r-cmp-expr /r-is-not-great-op] r-arithmetic-expr
-r-is-not-small-expr : [r-cmp-expr /r-is-not-small-op] r-arithmetic-expr
-
+r-cmp-expr : [r-cmp-expr r-cmp-op] r-arithmetic-expr
 ;; [Comparison Operator]
-r-is-equal-op : r-is-op
-r-is-not-equal-op : r-is-not-op
-;; --------------------------------------------------------------------------
-r-is-greater-op : r-is-op r-greater-op "than"
-r-is-smaller-op : r-is-op r-smaller-op "than"
-r-is-great-op : r-is-op r-great-op "as"
-r-is-small-op : r-is-op r-small-op "as"
-;; --------------------------------------------------------------------------
-r-is-not-greater-op : r-is-not-op r-greater-op "than"
-r-is-not-smaller-op : r-is-not-op r-smaller-op "than"
-r-is-not-great-op : r-is-not-op r-great-op "as"
-r-is-not-small-op : r-is-not-op r-small-op "as"
-;; --------------------------------------------------------------------------
+@r-cmp-op : r-is-equal-op | r-is-not-equal-op
+          | r-is-greater-op | r-is-smaller-op
+          | r-is-great-op | r-is-small-op
+          | r-is-not-greater-op | r-is-not-smaller-op
+          | r-is-not-great-op | r-is-not-small-op
+;; ----------------------------------------------------------
+r-is-equal-op : /r-is-op
+r-is-not-equal-op : /r-is-not-op
+;; ----------------------------------------------------------
+r-is-greater-op : /(r-is-op r-greater-op "than")
+r-is-smaller-op : /(r-is-op r-smaller-op "than")
+r-is-great-op : /(r-is-op "as" r-great-op "as")
+r-is-small-op : /(r-is-op "as" r-small-op "as")
+;; ----------------------------------------------------------
+r-is-not-greater-op : /(r-is-not-op r-greater-op "than")
+r-is-not-smaller-op : /(r-is-not-op r-smaller-op "than")
+r-is-not-great-op : /(r-is-not-op "as" r-great-op "as")
+r-is-not-small-op : /(r-is-not-op "as" r-small-op "as")
+;; ----------------------------------------------------------
 r-is-op : "is"
 r-is-not-op :  "is not" | "isnt" | "aint"
-;; --------------------------------------------------------------------------
+;; ----------------------------------------------------------
 r-greater-op : "higher" | "greater" | "bigger" | "stronger"
 r-smaller-op : "lower" | "less" | "smaller" | "weaker"
 r-great-op : "high" | "great" | "big" | "strong"

@@ -111,7 +111,72 @@
 (define-macro-cases r-is-equal-expr
   [(_ VAL) #'VAL]
   [(_ LEFT RIGHT) #'()])
-         
+
+(define-cases r-cmp-expr
+  [(_ val) val]
+  [(_ left op right)
+   (cond
+     ;; <Mysterious> <op> Mysterious
+     [(and (mysterious? left) (mysterious? right))
+      (if (eq? op '==) #t #f)]
+     ;; <Non-Mysterious> <op> Mysterious
+     [(and (not (mysterious? left)) (mysterious? right))
+      (if (eq? op '!=) #t #f)]
+     ;; String <op> Number
+     [(and (string? left) (number? right))
+      (let ([left-num (string->number left)])
+        (and left-num
+             (r-cmp-expr left-num op right)))]
+     ;; String <op> Boolean
+     [(and (string? left) (boolean? right))
+      (let ([left-bool (string->boolean left)])
+        (r-cmp-expr left-bool op right))]
+     ;; String <op> Null
+     [(and (string? left) (null? right))
+      (if (eq? op '!=) #t #f)]
+     ;; Number <op> Boolean
+     [(and (number? left) (boolean? right))
+      (let ([left-bool (number->boolean left)])
+        (r-cmp-expr left-bool op right))]
+     ;; Number <op> Null
+     [(and (number? left) (null? right))
+      (r-cmp-expr left 0)]
+     ;; Boolean <op> Null
+     [(and (boolean? left) (null? right))
+      (r-cmp-expr left op #f)]
+     ;; Equality comparison for same type
+     [(and (eq? op '==) (type=? left right))
+      (equal? left right)]
+     [(and (eq? op '!=) (type=? left right))
+      (equal? left right)]
+     ;; Ordering comparison for number
+     [(and (number? left) (number? right))
+      (cond
+        [(eq? op '>) (> left right)]
+        [(eq? op '<) (< left right)]
+        [(eq? op '>=) (>= left right)]
+        [(eq? op '<=) (<= left right)])]
+     ;; Ordering comparison for string
+     [(and (string? left) (string? right))
+      (cond
+        [(eq? op '>) (string>? left right)]
+        [(eq? op '<) (string<? left right)]
+        [(eq? op '>=) (string>=? left right)]
+        [(eq? op '<=) (string<=? left right)])]
+     [else
+      (error "Fail to compare")])])
+
+;; Comparison Operator
+(define-macro r-is-equal-op #''==)
+(define-macro r-is-not-equal-op #''!=)
+(define-macro r-is-greater-op #''>)
+(define-macro r-is-smaller-op #''<)
+(define-macro r-is-great-op #''>=)
+(define-macro r-is-small-op #''<=)
+(define-macro r-is-not-greater-op #''<=)
+(define-macro r-is-not-smaller-op #''>=)
+(define-macro r-is-not-great-op #''<)
+(define-macro r-is-not-small-op #''>)
 
 ;; =========== [Arithmetic Expression] ===========
 
@@ -147,8 +212,12 @@
 ;; Output
 (define (r-output val)
   (cond
-    [(null? val) (newline)]
-    [else (displayln val)]))
+    [(null? val)
+     (newline)]
+    [(boolean? val)
+     (displayln (boolean->string val))]
+    [else
+     (displayln val)]))
 
 ;; =========== [List] ===========
 
@@ -171,6 +240,16 @@
 ;; Boolean
 (define-macro r-true #'#t)
 (define-macro r-false #'#f)
+(define (boolean->string bool)
+  (if bool "true" "false"))
+
+;; Number
+(define (number->boolean num)
+  (if (= num 0) #f #t))
+
+;; String
+(define (string->boolean str)
+  (if (string=? str "") #f #t))
 
 ;; Type checking
 (define (type=? left right)
