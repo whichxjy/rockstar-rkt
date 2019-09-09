@@ -88,6 +88,14 @@
 (define-macro (r-put VAL ID)
   #'(set! ID VAL))
 
+;; =========== [Increment & Decrement] ===========
+
+(define-macro (r-increment ID UP ...)
+  #'(set! ID (r-add-expr ID (length (list UP ...)))))
+
+(define-macro (r-decrement ID DOWN ...)
+  #'(set! ID (r-sub-expr ID (length (list DOWN ...)))))
+
 ;; =========== [Boolean Expression] ===========
 
 (define-macro-cases r-and-expr
@@ -107,10 +115,6 @@
   [(_ _ VAL) #'(not VAL)])
 
 ;; =========== [Comparison Expression] ===========
-
-(define-macro-cases r-is-equal-expr
-  [(_ VAL) #'VAL]
-  [(_ LEFT RIGHT) #'()])
 
 (define-cases r-cmp-expr
   [(_ val) val]

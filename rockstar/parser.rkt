@@ -27,11 +27,11 @@ r-put : /("Put" | "put") r-expr /"into" r-var
 r-let : ("Let" | "let") r-var "be" [r-compoundable-op] r-expr
 
 ;; Increment & Decrement
-r-crement : r-increment | r-decrement
+@r-crement : r-increment | r-decrement
 ;; Increment
-r-increment : "Build" r-var "up" ("," "up")*
+r-increment : /"Build" r-var "up" (/[","] "up")*
 ;; Decrement
-r-decrement : "Knock" r-var "down" ("," "down")*
+r-decrement : /"Knock" r-var "down" (/[","] "down")*
 
 ;; Expression
 @r-expr : r-and-expr | r-or-expr | r-nor-expr
