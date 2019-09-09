@@ -81,7 +81,7 @@
 ;; =========== [Initialize Variable] ===========
 
 (define-macro (r-init-var ID)
-  #'(define ID '__mysterious__))
+  #'(define ID r-mysterious))
 
 ;; =========== [Assignment] ===========
 
@@ -108,8 +108,10 @@
 
 ;; =========== [Comparison Expression] ===========
 
-(define-macro-cases r-cmp-expr
-  [(_ VAL) #'VAL])
+(define-macro-cases r-is-equal-expr
+  [(_ VAL) #'VAL]
+  [(_ LEFT RIGHT) #'()])
+         
 
 ;; =========== [Arithmetic Expression] ===========
 
@@ -143,8 +145,10 @@
                 (or num str)))])
 
 ;; Output
-(define-macro (r-output VAL)
-  #'(displayln VAL))
+(define (r-output val)
+  (cond
+    [(null? val) (newline)]
+    [else (displayln val)]))
 
 ;; =========== [List] ===========
 
@@ -152,3 +156,26 @@
 (define-macro-cases r-value-list
   [(_ VAL) #'VAL]
   [(_ VAL ...) #'(list VAL ...)])
+
+;; =========== [Type] ===========
+
+;; Mysterious
+(struct mysterious ())
+(define-macro r-mysterious #'(mysterious))
+
+;; Null
+(define-macro r-null #''__null__)
+(define (null? value)
+  (eq? value '__null__))
+
+;; Boolean
+(define-macro r-true #'#t)
+(define-macro r-false #'#f)
+
+;; Type checking
+(define (type=? left right)
+  (or (and (mysterious? left) (mysterious? right))
+      (and (null? left) (null? right))
+      (and (boolean? left) (boolean? right))
+      (and (number? left) (number? right))
+      (and (string? left) (string? right))))

@@ -63,17 +63,21 @@
        "gone"))
 
 ;; Boolean
-(define-lex-abbrev boolean-type
+(define-lex-abbrev true-type
   (:or "true"
-       "false"
-       "maybe"
-       "definitely maybe"
        "right"
        "yes"
-       "ok"
+       "ok"))
+
+(define-lex-abbrev false-type
+  (:or "false"
        "wrong"
        "no"
        "lies"))
+
+(define-lex-abbrev boolean-reserved-terms
+  (:or "maybe"
+       "definitely maybe"))
 
 ;; Poetic Copula
 (define-lex-abbrev poetic-copula
@@ -147,6 +151,7 @@
 ;; Reserved terms
 (define-lex-abbrev reserved-terms
   (:or common-var-prefix
+       boolean-reserved-terms
        poetic-reserved-terms
        assignment-reserved-terms
        increment-reserved-terms
@@ -187,9 +192,12 @@
                  ;; Null
                  [null-type
                   (token 'NULL lexeme)]
-                 ;; Boolean
-                 [boolean-type
-                  (token 'BOOLEAN lexeme)]
+                 ;; Ture
+                 [true-type
+                  (token 'TRUE lexeme)]
+                 ;; False
+                 [false-type
+                  (token 'FALSE lexeme)]
                  ;; Number
                  [(:or (:+ numeric)
                        (:seq (:+ numeric) "." (:+ numeric)))

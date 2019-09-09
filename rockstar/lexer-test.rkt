@@ -115,7 +115,11 @@
 
 (check-equal?
  (lex "true")
- (list (token 'BOOLEAN "true")))
+ (list (token 'TRUE "true")))
+
+(check-equal?
+ (lex "false")
+ (list (token 'FALSE "false")))
 
 ;; Number
 

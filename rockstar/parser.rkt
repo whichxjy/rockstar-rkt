@@ -45,15 +45,47 @@ r-nor-expr : [(r-and-expr | r-or-expr | r-nor-expr) /r-nor-op] r-cmp-expr
 @r-or-op: "or"
 @r-nor-op: "nor"
 
-;; Comparison Expression
-r-cmp-expr : [r-cmp-expr r-cmp-op] r-arithmetic-expr
-;; Comparison Operator
-@r-cmp-op : r-equality-op | r-greater-op | r-smaller-op | r-great-op | r-small-op
-@r-equality-op : ("is" | "is not" | "isnt" | "aint")
-@r-greater-op : r-equality-op ("higher" | "greater" | "bigger" | "stronger") "than"
-@r-smaller-op : r-equality-op ("lower" | "less" | "smaller" | "weaker") "than"
-@r-great-op : r-equality-op ("high" | "great" | "big" | "strong") "as"
-@r-small-op : r-equality-op ("low" | "little" | "small" | "weak") "as"
+;; [Comparison Expression]
+@r-cmp-expr : r-is-equal-expr | r-is-not-equal-expr
+            | r-is-greater-expr | r-is-smaller-expr
+            | r-is-great-expr | r-is-small-expr
+            | r-is-not-greater-expr | r-is-not-smaller-expr
+            | r-is-not-great-expr | r-is-not-small-expr
+;; --------------------------------------------------------------------------
+r-is-equal-expr : [r-cmp-expr /r-is-equal-op] r-arithmetic-expr
+r-is-not-equal-expr : [r-cmp-expr /r-is-not-equal-op] r-arithmetic-expr
+;; --------------------------------------------------------------------------
+r-is-greater-expr : [r-cmp-expr /r-is-greater-op] r-arithmetic-expr
+r-is-smaller-expr : [r-cmp-expr /r-is-smaller-op] r-arithmetic-expr
+r-is-great-expr : [r-cmp-expr /r-is-great-op] r-arithmetic-expr
+r-is-small-expr : [r-cmp-expr /r-is-small-op] r-arithmetic-expr
+;; --------------------------------------------------------------------------
+r-is-not-greater-expr : [r-cmp-expr /r-is-not-greater-op] r-arithmetic-expr
+r-is-not-smaller-expr : [r-cmp-expr /r-is-not-smaller-op] r-arithmetic-expr
+r-is-not-great-expr : [r-cmp-expr /r-is-not-great-op] r-arithmetic-expr
+r-is-not-small-expr : [r-cmp-expr /r-is-not-small-op] r-arithmetic-expr
+
+;; [Comparison Operator]
+r-is-equal-op : r-is-op
+r-is-not-equal-op : r-is-not-op
+;; --------------------------------------------------------------------------
+r-is-greater-op : r-is-op r-greater-op "than"
+r-is-smaller-op : r-is-op r-smaller-op "than"
+r-is-great-op : r-is-op r-great-op "as"
+r-is-small-op : r-is-op r-small-op "as"
+;; --------------------------------------------------------------------------
+r-is-not-greater-op : r-is-not-op r-greater-op "than"
+r-is-not-smaller-op : r-is-not-op r-smaller-op "than"
+r-is-not-great-op : r-is-not-op r-great-op "as"
+r-is-not-small-op : r-is-not-op r-small-op "as"
+;; --------------------------------------------------------------------------
+r-is-op : "is"
+r-is-not-op :  "is not" | "isnt" | "aint"
+;; --------------------------------------------------------------------------
+r-greater-op : "higher" | "greater" | "bigger" | "stronger"
+r-smaller-op : "lower" | "less" | "smaller" | "weaker"
+r-great-op : "high" | "great" | "big" | "strong"
+r-small-op : "low" | "little" | "small" | "weak"
 
 ;; Arithmetic Expression
 @r-arithmetic-expr : r-add-expr | r-sub-expr
@@ -130,11 +162,13 @@ r-var-list : r-var (/r-var-list-sep r-var)*
 @r-pronoun : PRONOUN
 
 ;; Mysterious
-@r-mysterious : MYSTERIOUS
+r-mysterious : /MYSTERIOUS
 ;; Null
-@r-null : NULL
+r-null : /NULL
 ;; Boolean
-@r-boolean : BOOLEAN
+@r-boolean : r-true | r-false
+r-true : /TRUE
+r-false : /FALSE
 ;; Number
 @r-number : NUMBER
 ;; String
