@@ -148,7 +148,7 @@
      [(and (eq? op '==) (type=? left right))
       (equal? left right)]
      [(and (eq? op '!=) (type=? left right))
-      (equal? left right)]
+      (not (equal? left right))]
      ;; Ordering comparison for number
      [(and (number? left) (number? right))
       (cond
