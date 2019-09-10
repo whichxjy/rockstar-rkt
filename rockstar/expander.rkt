@@ -88,13 +88,32 @@
 (define-macro (r-put VAL ID)
   #'(set! ID VAL))
 
+(define-macro-cases r-let
+  [(_ ID VAL) #'(set! ID VAL)]
+  [(_ ID OP VAL)
+   #'(cond
+       [(eq? OP '+)
+        (set! ID (first (r-add-expr (list ID)
+                                    (list VAL))))]
+       [(eq? OP '-)
+        (set! ID (first (r-sub-expr (list ID)
+                                    (list VAL))))]
+       [(eq? OP '*)
+        (set! ID (first (r-mul-expr (list ID)
+                                    (list VAL))))]
+       [(eq? OP "/")
+        (set! ID (first (r-div-expr (list ID)
+                                    (list VAL))))])])
+
 ;; =========== [Increment & Decrement] ===========
 
 (define-macro (r-increment ID UP ...)
-  #'(set! ID (first (r-add-expr ID (length (list UP ...))))))
+  #'(set! ID (first (r-add-expr (list ID)
+                                (list (length (list UP ...)))))))
 
 (define-macro (r-decrement ID DOWN ...)
-  #'(set! ID (first (r-sub-expr ID (length (list DOWN ...))))))
+  #'(set! ID (first (r-sub-expr (list ID)
+                                (list (length (list DOWN ...)))))))
 
 ;; =========== [Expression] ===========
 
@@ -181,7 +200,8 @@
     [else
      (error "Fail to compare")]))
 
-;; Comparison Operator
+;; =========== [Comparison Operator] ===========
+ 
 (define-macro r-is-equal-op #''==)
 (define-macro r-is-not-equal-op #''!=)
 (define-macro r-is-greater-op #''>)
@@ -212,6 +232,8 @@
   [(_ VAL) #'VAL]
   [(_ LEFT RIGHT) #'(list (reduce r-div (append LEFT RIGHT)))])
 
+;; =========== [Arithmetic Function] ===========
+
 (define (r-add left right)
   (cond
     [(and (string? left) (string? right))
@@ -233,6 +255,13 @@
 
 (define (r-div left right)
   (/ left right))
+
+;; =========== [Arithmetic Operator] ===========
+
+(define-macro r-add-op #''+)
+(define-macro r-sub-op #''-)
+(define-macro r-mul-op #''*)
+(define-macro r-div-op #''/)
 
 ;; =========== [Input & Output] ===========
 

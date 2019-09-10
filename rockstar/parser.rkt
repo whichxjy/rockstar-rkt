@@ -24,7 +24,7 @@ r-program : [r-statement] (/NEWLINE [r-statement])*
 ;; Put
 r-put : /("Put" | "put") r-expr /"into" r-var
 ;; Let
-r-let : ("Let" | "let") r-var "be" [r-compoundable-op] r-expr
+r-let : /("Let" | "let") r-var /"be" [r-compoundable-op] r-expr
 
 ;; Increment & Decrement
 @r-crement : r-increment | r-decrement
@@ -82,10 +82,10 @@ r-sub-expr : [(r-add-expr | r-sub-expr) /r-sub-op] (r-mul-expr | r-div-expr)
 r-mul-expr : [(r-mul-expr | r-div-expr) /r-mul-op] r-not-expr
 r-div-expr : [(r-mul-expr | r-div-expr) /r-div-op] r-not-expr
 ;; Arithmetic Operator
-r-add-op : "+" | "plus" | "with"
-r-sub-op : "-" | "minus" | "without"
-r-mul-op : "*" | "times" | "of"
-r-div-op : "/" | "over"
+r-add-op : /("+" | "plus" | "with")
+r-sub-op : /("-" | "minus" | "without")
+r-mul-op : /("*" | "times" | "of")
+r-div-op : /("/" | "over")
 ;; Compoundable Operator
 @r-compoundable-op : r-add-op | r-sub-op | r-mul-op | r-div-op
 
