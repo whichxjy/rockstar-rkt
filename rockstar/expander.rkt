@@ -286,6 +286,19 @@
     [else
      (displayln val)]))
 
+;; =========== [Block] ===========
+
+(define-macro (r-block STATEMENT ...)
+  #'(begin STATEMENT ...))
+
+;; =========== [Conditional] ===========
+
+(define-macro-cases r-if
+  [(_ COND TBLOCK)
+   #'(when COND TBLOCK)]
+  [(_ COND TBLOCK FBLOCK)
+   #'(if COND TBLOCK FBLOCK)])
+
 ;; =========== [List] ===========
 
 ;; Value List
