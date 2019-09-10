@@ -34,7 +34,7 @@ r-increment : /"Build" r-var "up" (/[","] "up")*
 r-decrement : /"Knock" r-var "down" (/[","] "down")*
 
 ;; Expression
-@r-expr : r-and-expr | r-or-expr | r-nor-expr
+r-expr : r-and-expr | r-or-expr | r-nor-expr
 
 ;; Boolean Expression: and & or & nor
 r-and-expr : [(r-and-expr | r-or-expr | r-nor-expr) /r-and-op] r-cmp-expr

@@ -91,84 +91,95 @@
 ;; =========== [Increment & Decrement] ===========
 
 (define-macro (r-increment ID UP ...)
-  #'(set! ID (r-add-expr ID (length (list UP ...)))))
+  #'(set! ID (first (r-add-expr ID (length (list UP ...))))))
 
 (define-macro (r-decrement ID DOWN ...)
-  #'(set! ID (r-sub-expr ID (length (list DOWN ...)))))
+  #'(set! ID (first (r-sub-expr ID (length (list DOWN ...))))))
+
+;; =========== [Expression] ===========
+
+(define-macro (r-expr VAL) #'(first VAL))
 
 ;; =========== [Boolean Expression] ===========
 
 (define-macro-cases r-and-expr
   [(_ VAL) #'VAL]
-  [(_ LEFT RIGHT) #'(and LEFT RIGHT)])
+  [(_ LEFT RIGHT) #'(list (apply and (append LEFT RIGHT)))])
 
 (define-macro-cases r-or-expr
   [(_ VAL) #'VAL]
-  [(_ LEFT RIGHT) #'(or LEFT RIGHT)])
+  [(_ LEFT RIGHT) #'(list (apply or (append LEFT RIGHT)))])
 
 (define-macro-cases r-nor-expr
   [(_ VAL) #'VAL]
-  [(_ LEFT RIGHT) #'(nor LEFT RIGHT)])
+  [(_ LEFT RIGHT) #'(list (apply nor (append LEFT RIGHT)))])
 
 (define-macro-cases r-not-expr
   [(_ VAL) #'VAL]
-  [(_ _ VAL) #'(not VAL)])
+  [(_ _ VAL) #'(if (= (length VAL) 1)
+                   (list (not (first VAL)))
+                   (error "not: too much arguments"))])
 
 ;; =========== [Comparison Expression] ===========
 
-(define-cases r-cmp-expr
-  [(_ val) val]
-  [(_ left op right)
-   (cond
-     ;; <Mysterious> <op> Mysterious
-     [(and (mysterious? left) (mysterious? right))
-      (if (eq? op '==) #t #f)]
-     ;; <Non-Mysterious> <op> Mysterious
-     [(and (not (mysterious? left)) (mysterious? right))
-      (if (eq? op '!=) #t #f)]
-     ;; String <op> Number
-     [(and (string? left) (number? right))
-      (let ([left-num (string->number left)])
-        (and left-num
-             (r-cmp-expr left-num op right)))]
-     ;; String <op> Boolean
-     [(and (string? left) (boolean? right))
-      (let ([left-bool (string->boolean left)])
-        (r-cmp-expr left-bool op right))]
-     ;; String <op> Null
-     [(and (string? left) (null? right))
-      (if (eq? op '!=) #t #f)]
-     ;; Number <op> Boolean
-     [(and (number? left) (boolean? right))
-      (let ([left-bool (number->boolean left)])
-        (r-cmp-expr left-bool op right))]
-     ;; Number <op> Null
-     [(and (number? left) (null? right))
-      (r-cmp-expr left 0)]
-     ;; Boolean <op> Null
-     [(and (boolean? left) (null? right))
-      (r-cmp-expr left op #f)]
-     ;; Equality comparison for same type
-     [(and (eq? op '==) (type=? left right))
-      (equal? left right)]
-     [(and (eq? op '!=) (type=? left right))
-      (not (equal? left right))]
-     ;; Ordering comparison for number
-     [(and (number? left) (number? right))
-      (cond
-        [(eq? op '>) (> left right)]
-        [(eq? op '<) (< left right)]
-        [(eq? op '>=) (>= left right)]
-        [(eq? op '<=) (<= left right)])]
-     ;; Ordering comparison for string
-     [(and (string? left) (string? right))
-      (cond
-        [(eq? op '>) (string>? left right)]
-        [(eq? op '<) (string<? left right)]
-        [(eq? op '>=) (string>=? left right)]
-        [(eq? op '<=) (string<=? left right)])]
-     [else
-      (error "Fail to compare")])])
+(define-macro-cases r-cmp-expr
+  [(_ VAL) #'VAL]
+  [(_ LEFT OP RIGHT)
+   #'(let ([cmp (lambda (left right)
+                  (r-cmp left OP right))])
+       (list (reduce cmp (append LEFT RIGHT))))])
+
+(define (r-cmp left op right)
+  (cond
+    ;; <Mysterious> <op> Mysterious
+    [(and (mysterious? left) (mysterious? right))
+     (if (eq? op '==) #t #f)]
+    ;; <Non-Mysterious> <op> Mysterious
+    [(and (not (mysterious? left)) (mysterious? right))
+     (if (eq? op '!=) #t #f)]
+    ;; String <op> Number
+    [(and (string? left) (number? right))
+     (let ([left-num (string->number left)])
+       (and left-num
+            (r-cmp left-num op right)))]
+    ;; String <op> Boolean
+    [(and (string? left) (boolean? right))
+     (let ([left-bool (string->boolean left)])
+       (r-cmp left-bool op right))]
+    ;; String <op> Null
+    [(and (string? left) (null? right))
+     (if (eq? op '!=) #t #f)]
+    ;; Number <op> Boolean
+    [(and (number? left) (boolean? right))
+     (let ([left-bool (number->boolean left)])
+       (r-cmp left-bool op right))]
+    ;; Number <op> Null
+    [(and (number? left) (null? right))
+     (r-cmp left op 0)]
+    ;; Boolean <op> Null
+    [(and (boolean? left) (null? right))
+     (r-cmp left op #f)]
+    ;; Equality comparison for same type
+    [(and (eq? op '==) (type=? left right))
+     (equal? left right)]
+    [(and (eq? op '!=) (type=? left right))
+     (not (equal? left right))]
+    ;; Ordering comparison for number
+    [(and (number? left) (number? right))
+     (cond
+       [(eq? op '>) (> left right)]
+       [(eq? op '<) (< left right)]
+       [(eq? op '>=) (>= left right)]
+       [(eq? op '<=) (<= left right)])]
+    ;; Ordering comparison for string
+    [(and (string? left) (string? right))
+     (cond
+       [(eq? op '>) (string>? left right)]
+       [(eq? op '<) (string<? left right)]
+       [(eq? op '>=) (string>=? left right)]
+       [(eq? op '<=) (string<=? left right)])]
+    [else
+     (error "Fail to compare")]))
 
 ;; Comparison Operator
 (define-macro r-is-equal-op #''==)
@@ -186,19 +197,42 @@
 
 (define-macro-cases r-add-expr
   [(_ VAL) #'VAL]
-  [(_ LEFT RIGHT) #'(+ LEFT RIGHT)])
+  [(_ LEFT RIGHT) #'(list (reduce r-add (append LEFT RIGHT)))])
+                      
 
 (define-macro-cases r-sub-expr
   [(_ VAL) #'VAL]
-  [(_ LEFT RIGHT) #'(- LEFT RIGHT)])
+  [(_ LEFT RIGHT) #'(list (reduce r-sub (append LEFT RIGHT)))])
 
 (define-macro-cases r-mul-expr
   [(_ VAL) #'VAL]
-  [(_ LEFT RIGHT) #'(* LEFT RIGHT)])
+  [(_ LEFT RIGHT) #'(list (reduce r-mul (append LEFT RIGHT)))])
 
 (define-macro-cases r-div-expr
   [(_ VAL) #'VAL]
-  [(_ LEFT RIGHT) #'(/ LEFT RIGHT)])
+  [(_ LEFT RIGHT) #'(list (reduce r-div (append LEFT RIGHT)))])
+
+(define (r-add left right)
+  (cond
+    [(and (string? left) (string? right))
+     (string-append left right)]
+    [else
+     (+ left right)]))
+
+(define (r-sub left right)
+  (- left right))
+
+(define (r-mul left right)
+  (cond
+    [(and (integer? left) (string? right))
+     (make-dup-string right left)]
+    [(and (string? left) (integer? right))
+     (make-dup-string left right)]
+    [else
+     (* left right)]))
+
+(define (r-div left right)
+  (/ left right))
 
 ;; =========== [Input & Output] ===========
 
@@ -226,39 +260,62 @@
 ;; =========== [List] ===========
 
 ;; Value List
-(define-macro-cases r-value-list
-  [(_ VAL) #'VAL]
-  [(_ VAL ...) #'(list VAL ...)])
+(define-macro (r-value-list VAL ...)
+  #'(list VAL ...))
 
 ;; =========== [Type] ===========
 
 ;; Mysterious
+
 (struct mysterious ())
+
 (define-macro r-mysterious #'(mysterious))
 
 ;; Null
+
 (define-macro r-null #''__null__)
+
 (define (null? value)
   (eq? value '__null__))
 
 ;; Boolean
+
 (define-macro r-true #'#t)
 (define-macro r-false #'#f)
+
 (define (boolean->string bool)
   (if bool "true" "false"))
 
 ;; Number
+
 (define (number->boolean num)
   (if (= num 0) #f #t))
 
 ;; String
+
 (define (string->boolean str)
   (if (string=? str "") #f #t))
 
+(define (make-dup-string base-str times)
+  (for/fold ([result ""])
+            ([i (in-range times)])
+    (string-append result base-str)))
+
 ;; Type checking
+
 (define (type=? left right)
   (or (and (mysterious? left) (mysterious? right))
       (and (null? left) (null? right))
       (and (boolean? left) (boolean? right))
       (and (number? left) (number? right))
       (and (string? left) (string? right))))
+
+;; =========== [Helper] ===========
+
+(define (reduce func xs)
+  (cond
+    [(null? xs) null]
+    [else
+     (for/fold ([acc (first xs)])
+               ([i (in-list (rest xs))])
+       (func acc i))]))
