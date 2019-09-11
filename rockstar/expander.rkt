@@ -18,13 +18,17 @@
            syntax/stx)
   ;; initialize all variables
   (define (init-all-variables target-stx global-var-ids)
-    ;; distinguish non-func-def statements from func-def statements
-    (define not-func-def-stxs
-      (filter (lambda (stx)
-                (and (syntax-property stx 'r-statement)
-                     (stx-pair? stx)
-                     (not (eq? (syntax->datum (stx-car stx)) 'r-func-def))))
-              (stx->list target-stx)))
+    ;; distinguish func-def statements from non-func-def statements
+    (define-values (func-def-stxs not-func-def-stxs)
+      (partition (lambda (stx)
+                   (and (syntax-property stx 'r-statement)
+                        (stx-pair? stx)
+                        (eq? (syntax->datum (stx-car stx)) 'r-func-def)))
+                 (stx->list target-stx)))
+    ;; find ids of function name in r-func-def
+    (define func-def-ids
+      (for/list ([stx func-def-stxs])
+        (stx-car (stx-cdr stx))))
     ;; find the index of first statement in target-stx
     (define first-stmt-index
       (index-where (stx->list target-stx)
@@ -65,6 +69,11 @@
                                              (eq? (syntax->datum global-var-id)
                                                   (syntax->datum stx)))
                                            global-var-ids))
+                               ;; not func-def-id
+                               (not (findf (lambda (func-def-id)
+                                             (eq? (syntax->datum func-def-id)
+                                                  (syntax->datum stx)))
+                                           func-def-ids))
                                ;; not left-half-id
                                (not (findf (lambda (left-half-id)
                                              (eq? (syntax->datum left-half-id)
@@ -363,14 +372,13 @@
 ;; ============================ [Function] ===========================
 
 (define-macro (r-func-def FUNC-NAME VARS STATEMENT ...)
-  #'(set! FUNC-NAME
-          (lambda VARS
-            (define return-val (mysterious))
-            (with-handlers ([return-func-signal?
-                             (lambda (exn-val)
-                               (set! return-val (return-func-signal-val exn-val)))])
-              STATEMENT ...)
-            return-val)))
+  #'(define (FUNC-NAME . VARS)
+      (define return-val (mysterious))
+      (with-handlers ([return-func-signal?
+                       (lambda (exn-val)
+                         (set! return-val (return-func-signal-val exn-val)))])
+        STATEMENT ...)
+      return-val))
 
 (struct return-func-signal (val))
 
