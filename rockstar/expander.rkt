@@ -95,12 +95,12 @@
                                      non-global-var-ids))]
         [else stx]))))
 
-;; =========== [Initialize Variable] ===========
+;; ====================== [Initialize Variable] ======================
 
 (define-macro (r-init-var ID)
   #'(define ID r-mysterious))
 
-;; =========== [Assignment] ===========
+;; =========================== [Assignment] ==========================
 
 (define-macro (r-put VAL ID)
   #'(set! ID VAL))
@@ -116,7 +116,7 @@
        (set! ID (first (expr (list ID)
                              (list VAL)))))])
 
-;; =========== [Increment & Decrement] ===========
+;; ===================== [Increment & Decrement] =====================
 
 (define-macro (r-increment ID UP ...)
   #'(set! ID (first (r-add-expr (list ID)
@@ -126,11 +126,11 @@
   #'(set! ID (first (r-sub-expr (list ID)
                                 (list (length (list DOWN ...)))))))
 
-;; =========== [Expression] ===========
+;; =========================== [Expression] ==========================
 
 (define-macro (r-expr VAL) #'(first VAL))
 
-;; =========== [Boolean Expression] ===========
+;; ======================= [Boolean Expression] ======================
 
 (define-macro-cases r-and-expr
   [(_ VAL) #'VAL]
@@ -150,7 +150,7 @@
                    (list (not (first VAL)))
                    (error "not: too much arguments"))])
 
-;; =========== [Comparison Expression] ===========
+;; ===================== [Comparison Expression] =====================
 
 (define-macro-cases r-cmp-expr
   [(_ VAL) #'VAL]
@@ -213,8 +213,8 @@
     [else
      (error "Fail to compare")]))
 
-;; =========== [Comparison Operator] ===========
- 
+;; ====================== [Comparison Operator] ======================
+
 (define-macro r-is-equal-op #''==)
 (define-macro r-is-not-equal-op #''!=)
 (define-macro r-is-greater-op #''>)
@@ -226,7 +226,7 @@
 (define-macro r-is-not-great-op #''<)
 (define-macro r-is-not-small-op #''>)
 
-;; =========== [Arithmetic Expression] ===========
+;; ===================== [Arithmetic Expression] =====================
 
 (define-cases r-add-expr
   [(_ val) val]
@@ -248,7 +248,7 @@
   [(_ left right)
    (list (reduce r-div (append left right)))])
 
-;; =========== [Arithmetic Function] ===========
+;; ====================== [Arithmetic Function] ======================
 
 (define (r-add left right)
   (cond
@@ -272,14 +272,14 @@
 (define (r-div left right)
   (/ left right))
 
-;; =========== [Arithmetic Operator] ===========
+;; ====================== [Arithmetic Operator] ======================
 
 (define-macro r-add-op #''+)
 (define-macro r-sub-op #''-)
 (define-macro r-mul-op #''*)
 (define-macro r-div-op #''/)
 
-;; =========== [Input & Output] ===========
+;; ========================= [Input & Output] ========================
 
 ;; Input
 (define-macro-cases r-input
@@ -302,12 +302,12 @@
     [else
      (displayln val)]))
 
-;; =========== [Block] ===========
+;; ============================= [Block] =============================
 
 (define-macro (r-block STATEMENT ...)
   #'(begin STATEMENT ...))
 
-;; =========== [Conditional] ===========
+;; ========================== [Conditional] ==========================
 
 (define-macro-cases r-if
   [(_ COND TBLOCK)
@@ -315,7 +315,7 @@
   [(_ COND TBLOCK FBLOCK)
    #'(if COND TBLOCK FBLOCK)])
 
-;; =========== [Loop] ===========
+;; ============================== [Loop] =============================
 
 (define continue-ccs empty)
 
@@ -360,7 +360,7 @@
   (define top-cc (first continue-ccs))
   (top-cc (void)))
 
-;; =========== [Function] ===========
+;; ============================ [Function] ===========================
 
 (define-macro (r-func-def FUNC-NAME VARS STATEMENT ...)
   #'(set! FUNC-NAME
@@ -382,13 +382,13 @@
   [(_ FUNC-NAME VAL ...)
    #'(list (FUNC-NAME VAL ...))])
 
-;; =========== [List] ===========
+;; ============================== [List] =============================
 
 ;; Value List
 (define-macro (r-value-list VAL ...)
   #'(list VAL ...))
 
-;; =========== [Type] ===========
+;; ============================== [Type] =============================
 
 ;; Mysterious
 (struct mysterious ())
@@ -429,7 +429,7 @@
       (and (number? left) (number? right))
       (and (string? left) (string? right))))
 
-;; =========== [Helper] ===========
+;; ============================= [Helper] ============================
 
 (define (reduce func xs)
   (cond
