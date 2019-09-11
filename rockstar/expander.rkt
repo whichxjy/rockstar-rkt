@@ -311,11 +311,6 @@
     [else
      (displayln val)]))
 
-;; ============================= [Block] =============================
-
-(define-macro (r-block STATEMENT ...)
-  #'(begin STATEMENT ...))
-
 ;; ========================== [Conditional] ==========================
 
 (define-macro-cases r-if
@@ -323,6 +318,12 @@
    #'(when COND TBLOCK)]
   [(_ COND TBLOCK FBLOCK)
    #'(if COND TBLOCK FBLOCK)])
+
+(define-macro (r-if-consequent STATEMENT ...)
+  #'(begin STATEMENT ...))
+
+(define-macro (r-else STATEMENT ...)
+  #'(begin STATEMENT ...))
 
 ;; ============================== [Loop] =============================
 
@@ -357,6 +358,9 @@
         (r-break))
       BLOCK
       (r-continue)))
+
+(define-macro (r-loopable STATEMENT ...)
+  #'(begin STATEMENT ...))
 
 (struct break-loop-signal ())
 

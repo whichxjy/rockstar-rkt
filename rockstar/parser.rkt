@@ -100,23 +100,23 @@ r-input : "Listen" | ("Listen to" r-var)
 r-output : /("Say" | "Shout" | "Whisper" | "Scream") r-expr
 
 ;; Block
-r-block : r-statement (/NEWLINE r-statement)* /NEWLINE
+@r-block : r-statement (/NEWLINE r-statement)* /NEWLINE
 
 ;; Conditional
 r-if : /"If" r-expr
        r-if-consequent
        [r-else]
-@r-if-consequent : r-statement
-                 | (/NEWLINE r-block)
-@r-else : (/"Else" r-statement)
-        | (/NEWLINE /"Else" r-statement)
-        | (/NEWLINE /"Else" /NEWLINE r-block)
+r-if-consequent : r-statement
+                | (/NEWLINE r-block)
+r-else : (/"Else" r-statement)
+       | (/NEWLINE /"Else" r-statement)
+       | (/NEWLINE /"Else" /NEWLINE r-block)
 
 ;; Loop
 r-while : /"While" r-expr r-loopable
 r-until : /"Until" r-expr r-loopable
-@r-loopable : r-statement
-            | (/NEWLINE r-block)
+r-loopable : r-statement
+           | (/NEWLINE r-block)
 r-break : /("break" | "Break it down")
 r-continue : /("continue" | "Take it to the top")
 
