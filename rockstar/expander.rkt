@@ -377,7 +377,10 @@
 (define (r-func-return val)
   (raise (return-func-signal val)))
 
-(define-macro r-func-call #'#%app)
+(define-macro-cases r-func-call
+  [(_ VAL) #'VAL]
+  [(_ FUNC-NAME VAL ...)
+   #'(list (FUNC-NAME VAL ...))])
 
 ;; =========== [List] ===========
 

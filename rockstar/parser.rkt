@@ -90,9 +90,9 @@ r-div-op : /("/" | "over")
 @r-compoundable-op : r-add-op | r-sub-op | r-mul-op | r-div-op
 
 ;; Logical Not Expression
-r-not-expr : [r-not-op] r-value-list
+r-not-expr : [r-not-op] r-func-call
 ;; Logical Not Operator
-@r-not-op : "not"
+@r-not-op : "not" 
 
 ;; Input
 r-input : "Listen" | ("Listen to" r-var)
@@ -126,20 +126,16 @@ r-func-def : r-var /"takes" r-var-list /NEWLINE
 ;; Function Return Statement
 r-func-return : /"Give back" r-expr
 ;; Function Call
-r-func-call : r-var /"taking" r-expr-list
-
-;; Expression List Separator
-r-expr-list-sep : "," | "&" | ", and" | "n"
-;; Expression List
-@r-expr-list : r-expr (/r-expr-list-sep r-expr)*
+r-func-call : (r-var /"taking" @r-value-list)
+            | r-value-list
 
 ;; Value List Separator
-r-value-list-sep : r-expr-list-sep
+r-value-list-sep : "," | "&" | ", and" | "n"
 ;; Value List
 r-value-list : r-value (/r-value-list-sep r-value)*
 
 ;; Variable List Separator
-r-var-list-sep : r-expr-list-sep | "and"
+r-var-list-sep : r-value-list-sep | "and"
 ;; Variable List
 /r-var-list : r-var (/r-var-list-sep r-var)*
 
