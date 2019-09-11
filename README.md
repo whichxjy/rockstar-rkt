@@ -1,6 +1,6 @@
 # #lang rockstar
 
-Implementation of [Rockstar]((https://codewithrockstar.com)) in Racket.
+Implementation of [Rockstar](https://codewithrockstar.com) in Racket.
 
 ## Quick Start
 
