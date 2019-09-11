@@ -6,7 +6,7 @@ Implementation of [Rockstar](https://codewithrockstar.com) in Racket.
 
 1. [Download and install Racket](https://download.racket-lang.org/), which includes DrRacket.
 
-2. Install `rockstar` using raco on the command line:
+2. Install [rockstar](https://pkgd.racket-lang.org/pkgn/package/rockstar) using raco on the command line:
 
 ```
 raco pkg install rockstar
@@ -32,7 +32,7 @@ Hello World
 raco pkg update --update-deps rockstar
 ```
 
-## Try it
+## Try This
 
 ```
 #lang rockstar
@@ -105,7 +105,7 @@ Else whisper "Bar"
 
 - [x] Functions (may exist bugs)
 
-## See also
+## See Also
 
 [Why Racket? Why Lisp?](https://practicaltypography.com/why-racket-why-lisp.html)
 
