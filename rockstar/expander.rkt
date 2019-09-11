@@ -292,11 +292,11 @@
 
 ;; Input
 (define-macro-cases r-input
-  [(_ "Listen")
+  [(_ _)
    #'(let* ([str (read-line)]
             [num (string->number (string-trim str))])
        (or num str))]
-  [(_ "Listen to" ID)
+  [(_ _ ID)
    #'(set! ID (let* ([str (read-line)]
                      [num (string->number (string-trim str))])
                 (or num str)))])

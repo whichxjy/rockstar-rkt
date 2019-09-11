@@ -95,9 +95,13 @@ r-not-expr : [r-not-op] r-func-call
 @r-not-op : "not" 
 
 ;; Input
-r-input : "Listen" | ("Listen to" r-var)
+r-input : ("Listen" | "listen")
+        | (("Listen to" | "listen to") r-var)
 ;; Output
-r-output : /("Say" | "Shout" | "Whisper" | "Scream") r-expr
+r-output : /("Say" | "say"
+           | "Shout" | "shout"
+           | "Whisper" | "whisper"
+           | "Scream" | "scream") r-expr
 
 ;; Block
 @r-block : r-statement (/NEWLINE r-statement)* /NEWLINE

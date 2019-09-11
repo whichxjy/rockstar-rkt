@@ -121,8 +121,12 @@
 
 ;; Input & Output
 (define-lex-abbrev stream-reserved-terms
-  (:or "Listen" "Listen to"
-       "Say" "Shout" "Whisper" "Scream"))
+  (:or "Listen"    "listen"
+       "Listen to" "listen to"
+       "Say"       "say"
+       "Shout"     "shout"
+       "Whisper"   "whisper"
+       "Scream"    "scream"))
 
 ;; Conditional reserved terms
 (define-lex-abbrev cond-reserved-terms
