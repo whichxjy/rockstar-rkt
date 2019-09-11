@@ -11,6 +11,7 @@
        REAL-STATEMENT ...
        (void))))
 
+;; [Bug: it couldn't find r-func-def from r-if & r-while & r-until]
 ;; Phase 1
 (begin-for-syntax
   (require racket/list
@@ -24,6 +25,25 @@
                      (stx-pair? stx)
                      (not (eq? (syntax->datum (stx-car stx)) 'r-func-def))))
               (stx->list target-stx)))
+    ;; find the index of first statement in target-stx
+    (define first-stmt-index
+      (index-where (stx->list target-stx)
+                   (lambda (stx)
+                     (syntax-property stx 'r-statement))))
+    ;; split target-stx into two parts
+    (define-values (left-half right-half)
+      (split-at (stx->list target-stx) first-stmt-index))
+    ;; find all ids from left-half
+    ;; <=> find the function name and all parameters in r-func-def
+    (define left-half-ids
+      (cond
+        [(= (length left-half) 3)
+         (append (list (list-ref left-half 1))
+                 (stx-flatten (list-ref left-half 2)))]
+        [else
+         empty]))
+    ;; [To do: rewrite this function]
+    ;; [Issue: r-func-call in other kinds of statements]
     ;; find all ids of called functions from not-func-def-stxs
     (define called-func-ids
       (remove-duplicates
@@ -45,6 +65,11 @@
                                              (eq? (syntax->datum global-var-id)
                                                   (syntax->datum stx)))
                                            global-var-ids))
+                               ;; not left-half-id
+                               (not (findf (lambda (left-half-id)
+                                             (eq? (syntax->datum left-half-id)
+                                                  (syntax->datum stx)))
+                                           left-half-ids))
                                ;; not called-func-id
                                (not (findf (lambda (called-func-id)
                                              (eq? (syntax->datum called-func-id)
@@ -57,14 +82,6 @@
       (map (lambda (var-stx)
              #`(r-init-var #,var-stx))
            non-global-var-ids))
-    ;; find the index of first statement in target-stx
-    (define first-stmt-index
-      (index-where (stx->list target-stx)
-                   (lambda (stx)
-                     (syntax-property stx 'r-statement))))
-    ;; split target-stx into two parts
-    (define-values (left-half right-half)
-      (split-at (stx->list target-stx) first-stmt-index))
     ;; insert init statements to target-stx
     (define target-stx-with-init-stmts
       (append left-half init-stmts right-half))
