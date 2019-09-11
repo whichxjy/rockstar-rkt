@@ -315,7 +315,7 @@
                      (lambda (exn-val)
                        (void (pop-cc!)))])
       (let/cc here-cc
-         (void (push-cc! here-cc)))
+        (void (push-cc! here-cc)))
       (unless COND
         (r-break))
       BLOCK
@@ -326,7 +326,7 @@
                      (lambda (exn-val)
                        (void (pop-cc!)))])
       (let/cc here-cc
-         (void (push-cc! here-cc)))
+        (void (push-cc! here-cc)))
       (when COND
         (r-break))
       BLOCK
@@ -342,6 +342,25 @@
     (error "continue without loop"))
   (define top-cc (first continue-ccs))
   (top-cc (void)))
+
+;; =========== [Function] ===========
+
+(define-macro (r-func-def FUNC-NAME VARS STATEMENT ...)
+  #'(set! FUNC-NAME
+          (lambda VARS
+            (define return-val (mysterious))
+            (with-handlers ([return-func-signal?
+                             (lambda (exn-val)
+                               (set! return-val (return-func-signal-val exn-val)))])
+              STATEMENT ...)
+            return-val)))
+
+(struct return-func-signal (val))
+
+(define (r-func-return val)
+  (raise (return-func-signal val)))
+
+(define-macro r-func-call #'#%app)
 
 ;; =========== [List] ===========
 

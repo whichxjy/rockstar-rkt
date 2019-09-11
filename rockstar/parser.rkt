@@ -121,17 +121,17 @@ r-break : /("break" | "Break it down")
 r-continue : /("continue" | "Take it to the top")
 
 ;; Function Definition
-r-func-def : r-var "takes" r-var-list NEWLINE
-             r-block
+r-func-def : r-var /"takes" r-var-list /NEWLINE
+             @r-block
 ;; Function Return Statement
-r-func-return : "Give back" r-expr
+r-func-return : /"Give back" r-expr
 ;; Function Call
-r-func-call : r-var "taking" r-expr-list
+r-func-call : r-var /"taking" r-expr-list
 
 ;; Expression List Separator
 r-expr-list-sep : "," | "&" | ", and" | "n"
 ;; Expression List
-r-expr-list : r-expr (/r-expr-list-sep r-expr)*
+@r-expr-list : r-expr (/r-expr-list-sep r-expr)*
 
 ;; Value List Separator
 r-value-list-sep : r-expr-list-sep
@@ -141,7 +141,7 @@ r-value-list : r-value (/r-value-list-sep r-value)*
 ;; Variable List Separator
 r-var-list-sep : r-expr-list-sep | "and"
 ;; Variable List
-r-var-list : r-var (/r-var-list-sep r-var)*
+/r-var-list : r-var (/r-var-list-sep r-var)*
 
 ;; Variable
 @r-var : SIMPLE-VAR | COMMON-VAR | PROPER-VAR
