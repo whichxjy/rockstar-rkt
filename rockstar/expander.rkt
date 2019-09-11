@@ -298,6 +298,51 @@
   [(_ COND TBLOCK FBLOCK)
    #'(if COND TBLOCK FBLOCK)])
 
+;; =========== [Loop] ===========
+
+(define continue-ccs empty)
+
+(define (push-cc! x)
+  (set! continue-ccs (cons x continue-ccs)))
+
+(define (pop-cc!)
+  (define top-cc (first continue-ccs))
+  (set! continue-ccs (rest continue-ccs))
+  top-cc)
+
+(define-macro (r-while COND BLOCK)
+  #'(with-handlers ([break-loop-signal?
+                     (lambda (exn-val)
+                       (void (pop-cc!)))])
+      (let/cc here-cc
+         (void (push-cc! here-cc)))
+      (unless COND
+        (r-break))
+      BLOCK
+      (r-continue)))
+
+(define-macro (r-until COND BLOCK)
+  #'(with-handlers ([break-loop-signal?
+                     (lambda (exn-val)
+                       (void (pop-cc!)))])
+      (let/cc here-cc
+         (void (push-cc! here-cc)))
+      (when COND
+        (r-break))
+      BLOCK
+      (r-continue)))
+
+(struct break-loop-signal ())
+
+(define (r-break)
+  (raise (break-loop-signal)))
+
+(define (r-continue)
+  (when (empty? continue-ccs)
+    (error "continue without loop"))
+  (define top-cc (first continue-ccs))
+  (top-cc (void)))
+
 ;; =========== [List] ===========
 
 ;; Value List

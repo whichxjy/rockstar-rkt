@@ -113,12 +113,12 @@ r-if : /"If" r-expr
         | (/NEWLINE /"Else" /NEWLINE r-block)
 
 ;; Loop
-r-while : "While" r-expr r-loopable
-r-until : "Until" r-expr r-loopable
-r-loopable : r-statement
-           | (NEWLINE r-block)
-r-break : "break" | "Break it down"
-r-continue : "continue" | "Take it to the top"
+r-while : /"While" r-expr r-loopable
+r-until : /"Until" r-expr r-loopable
+@r-loopable : r-statement
+            | (/NEWLINE r-block)
+r-break : /("break" | "Break it down")
+r-continue : /("continue" | "Take it to the top")
 
 ;; Function Definition
 r-func-def : r-var "takes" r-var-list NEWLINE
