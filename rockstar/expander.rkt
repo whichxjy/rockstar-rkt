@@ -91,19 +91,13 @@
 (define-macro-cases r-let
   [(_ ID VAL) #'(set! ID VAL)]
   [(_ ID OP VAL)
-   #'(cond
-       [(eq? OP '+)
-        (set! ID (first (r-add-expr (list ID)
-                                    (list VAL))))]
-       [(eq? OP '-)
-        (set! ID (first (r-sub-expr (list ID)
-                                    (list VAL))))]
-       [(eq? OP '*)
-        (set! ID (first (r-mul-expr (list ID)
-                                    (list VAL))))]
-       [(eq? OP "/")
-        (set! ID (first (r-div-expr (list ID)
-                                    (list VAL))))])])
+   #'(let ([expr (cond
+                   [(eq? OP '+) r-add-expr]
+                   [(eq? OP '-) r-sub-expr]
+                   [(eq? OP '*) r-mul-expr]
+                   [(eq? OP '/) r-div-expr])])
+       (set! ID (first (expr (list ID)
+                             (list VAL)))))])
 
 ;; =========== [Increment & Decrement] ===========
 
@@ -185,18 +179,20 @@
      (not (equal? left right))]
     ;; Ordering comparison for number
     [(and (number? left) (number? right))
-     (cond
-       [(eq? op '>) (> left right)]
-       [(eq? op '<) (< left right)]
-       [(eq? op '>=) (>= left right)]
-       [(eq? op '<=) (<= left right)])]
+     (let ([cmp (cond
+                  [(eq? op '>) >]
+                  [(eq? op '<) <]
+                  [(eq? op '>=) >=]
+                  [(eq? op '<=) <=])])
+       (cmp left right))]
     ;; Ordering comparison for string
     [(and (string? left) (string? right))
-     (cond
-       [(eq? op '>) (string>? left right)]
-       [(eq? op '<) (string<? left right)]
-       [(eq? op '>=) (string>=? left right)]
-       [(eq? op '<=) (string<=? left right)])]
+     (let ([cmp (cond
+                  [(eq? op '>) string>?]
+                  [(eq? op '<) string<?]
+                  [(eq? op '>=) string>=?]
+                  [(eq? op '<=) string<=?])])
+       (cmp left right))]
     [else
      (error "Fail to compare")]))
 
@@ -215,22 +211,25 @@
 
 ;; =========== [Arithmetic Expression] ===========
 
-(define-macro-cases r-add-expr
-  [(_ VAL) #'VAL]
-  [(_ LEFT RIGHT) #'(list (reduce r-add (append LEFT RIGHT)))])
-                      
+(define-cases r-add-expr
+  [(_ val) val]
+  [(_ left right)
+   (list (reduce r-add (append left right)))])
 
-(define-macro-cases r-sub-expr
-  [(_ VAL) #'VAL]
-  [(_ LEFT RIGHT) #'(list (reduce r-sub (append LEFT RIGHT)))])
+(define-cases r-sub-expr
+  [(_ val) val]
+  [(_ left right)
+   (list (reduce r-sub (append left right)))])
 
-(define-macro-cases r-mul-expr
-  [(_ VAL) #'VAL]
-  [(_ LEFT RIGHT) #'(list (reduce r-mul (append LEFT RIGHT)))])
+(define-cases r-mul-expr
+  [(_ val) val]
+  [(_ left right)
+   (list (reduce r-mul (append left right)))])
 
-(define-macro-cases r-div-expr
-  [(_ VAL) #'VAL]
-  [(_ LEFT RIGHT) #'(list (reduce r-div (append LEFT RIGHT)))])
+(define-cases r-div-expr
+  [(_ val) val]
+  [(_ left right)
+   (list (reduce r-div (append left right)))])
 
 ;; =========== [Arithmetic Function] ===========
 
@@ -308,20 +307,17 @@
 ;; =========== [Type] ===========
 
 ;; Mysterious
-
 (struct mysterious ())
 
 (define-macro r-mysterious #'(mysterious))
 
 ;; Null
-
 (define-macro r-null #''__null__)
 
 (define (null? value)
   (eq? value '__null__))
 
 ;; Boolean
-
 (define-macro r-true #'#t)
 (define-macro r-false #'#f)
 
@@ -329,12 +325,10 @@
   (if bool "true" "false"))
 
 ;; Number
-
 (define (number->boolean num)
   (if (= num 0) #f #t))
 
 ;; String
-
 (define (string->boolean str)
   (if (string=? str "") #f #t))
 
@@ -344,7 +338,6 @@
     (string-append result base-str)))
 
 ;; Type checking
-
 (define (type=? left right)
   (or (and (mysterious? left) (mysterious? right))
       (and (null? left) (null? right))
