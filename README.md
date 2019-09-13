@@ -2,6 +2,14 @@
 
 Implementation of [Rockstar](https://codewithrockstar.com) in Racket.
 
+## About Rockstar
+
+According to its creator, Dylan Beattie:
+
+> Rockstar is a dynamically typed computer programming language, designed for creating programs that are also song lyrics. Rockstar is heavily influenced by the lyrical conventions of 1980s hard rock and power ballads.
+
+You can find the Rockstar programming language specification [here](https://codewithrockstar.com/docs).
+
 ## Quick Start
 
 1. [Download and install Racket](https://download.racket-lang.org/), which includes DrRacket.
