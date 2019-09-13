@@ -28,7 +28,7 @@ raco pkg install rockstar
 Say "Hello World"
 ```
 
-4. Click the `Run` button, you'll see the result:
+4. Click the `Run` button, and you'll see the result:
 
 ```
 Hello World
