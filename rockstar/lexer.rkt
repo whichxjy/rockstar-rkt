@@ -190,6 +190,8 @@
                  ;; Whitespace
                  [(:+ (:or #\space #\tab))
                   (token 'WHITESPACE lexeme #:skip? #t)]
+                 ;; Period
+                 ["." (token 'PERIOD lexeme #:skip? #t)]
                  ;; Mysterious
                  [mysterious-type
                   (token 'MYSTERIOUS lexeme)]
